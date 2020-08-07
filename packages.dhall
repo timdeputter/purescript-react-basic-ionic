@@ -123,6 +123,43 @@ let upstream =
 
 let overrides = {=}
 
-let additions = {=}
+let additions =  { literals =
+    { dependencies =
+      [ "assert"
+      , "effect"
+      , "console"
+      , "integers"
+      , "numbers"
+      , "partial"
+      , "psci-support"
+      , "unsafe-coerce"
+      , "typelevel-prelude"
+      ]
+    , repo =
+      "https://github.com/jvliwanag/purescript-literal.git"
+    , version =
+      "7b2ae20f77c67b7e419a92fdd0dc7a09b447b18e"
+   },
+   untagged-union =
+    { dependencies =
+        [ "assert"
+        , "console"
+        , "effect"
+        , "foreign"
+        , "foreign-object"
+        , "literals"
+        , "maybe"
+        , "newtype"
+        , "proxy"
+        , "psci-support"
+        , "tuples"
+        , "unsafe-coerce"
+        ]
+    , repo =
+      "https://github.com/jvliwanag/purescript-untagged-union.git"
+    , version =
+      "71dbd2deaa49b6daa5dd7698938dc0731a67fac5"
+   }
+}
 
 in  upstream // overrides // additions
