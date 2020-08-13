@@ -1,294 +1,144 @@
 const fs = require('fs');
 const util = require('util');
 
-var boolProps = [ 'allowFullScreen',
-'allowTransparency',
-'autoFocus',
-'autoPlay',
-'capture',
-'contentEditable',
-'draggable',
-'formNoValidate',
-'hidden',
-'itemScope',
-'noValidate',
-'readOnly',
-'scoped',
-'seamless',
-'spellCheck',
-'suppressContentEditableWarning',
-'unselectable',
-'controls',
-'loop',
-'muted',
-'disabled',
-'open',
-'checked',
-'multiple',
-'required',
-'reversed',
-'selected',
-'async',
-'defer',
-'default',
-'playsInline' ];
 
-var arrayJSXPorps = ['children'];
+var generateIonicTypes = (isJs) => {
+    printHeader(isJs);
+    withFileDo('./node_modules/@types/react/index.d.ts', generateGenericRowTypes(isJs));
+};
 
-var stringProps = [ 'about',
-'acceptCharset',
-'accessKey',
-'cellPadding',
-'cellSpacing',
-'charSet',
-'classID',
-'className',
-'contextMenu',
-'coords',
-'crossOrigin',
-'dangerouslySetInnerHTML',
-'datatype',
-'dateTime',
-'dir',
-'download',
-'encType',
-'formAction',
-'formEncType',
-'formMethod',
-'formTarget',
-'frameBorder',
-'href',
-'hrefLang',
-'htmlFor',
-'httpEquiv',
-'icon',
-'id',
-'inlist',
-'inputMode',
-'is',
-'itemID',
-'itemProp',
-'itemRef',
-'itemType',
-'key',
-'keyParams',
-'keyType',
-'lang',
-'marginHeight',
-'marginWidth',
-'mediaGroup',
-'name',
-'prefix',
-'property',
-'radioGroup',
-'rel',
-'resource',
-'role',
-'security',
-'shape',
-'srcLang',
-'srcSet',
-'target',
-'title',
-'type',
-'typeof',
-'useMap',
-'vocab',
-'wmode',
-'alt',
-'preload',
-'src',
-'cite',
-'form',
-'value',
-'height',
-'width',
-'accept',
-'action',
-'autoComplete',
-'method',
-'profile',
-'size',
-'manifest',
-'sandbox',
-'scrolling',
-'sizes',
-'autoCapitalize',
-'autoCorrect',
-'autoSave',
-'defaultChecked',
-'defaultValue',
-'list',
-'max',
-'min',
-'pattern',
-'placeholder',
-'results',
-'step',
-'challenge',
-'color',
-'integrity',
-'media',
-'nonce',
-'scope',
-'content',
-'high',
-'low',
-'optimum',
-'data',
-'label',
-'summary',
-'headers',
-'wrap',
-'kind',
-'poster' ];
-
-var eventhandlerProps = [ 'onAnimationEnd',
-'onAnimationIteration',
-'onAnimationStart',
-'onBlur',
-'onClick',
-'onCompositionEnd',
-'onCompositionStart',
-'onCompositionUpdate',
-'onContextMenu',
-'onCopy',
-'onCut',
-'onDoubleClick',
-'onDrag',
-'onDragEnd',
-'onDragEnter',
-'onDragExit',
-'onDragLeave',
-'onDragOver',
-'onDragStart',
-'onDrop',
-'onFocus',
-'onGotPointerCapture',
-'onInvalid',
-'onKeyDown',
-'onKeyPress',
-'onKeyUp',
-'onLostPointerCapture',
-'onMouseDown',
-'onMouseEnter',
-'onMouseLeave',
-'onMouseMove',
-'onMouseOut',
-'onMouseOver',
-'onMouseUp',
-'onPaste',
-'onPointerCancel',
-'onPointerDown',
-'onPointerEnter',
-'onPointerLeave',
-'onPointerMove',
-'onPointerOut',
-'onPointerOver',
-'onPointerUp',
-'onSelect',
-'onSubmit',
-'onTouchCancel',
-'onTouchEnd',
-'onTouchMove',
-'onTouchStart',
-'onTransitionEnd',
-'onWheel',
-'onAbort',
-'onCanPlay',
-'onCanPlayThrough',
-'onDurationChange',
-'onEmptied',
-'onEncrypted',
-'onEnded',
-'onError',
-'onLoadStart',
-'onLoadedData',
-'onLoadedMetadata',
-'onPause',
-'onPlay',
-'onPlaying',
-'onProgress',
-'onRateChange',
-'onScroll',
-'onSeeked',
-'onSeeking',
-'onStalled',
-'onSuspend',
-'onTimeUpdate',
-'onVolumeChange',
-'onWaiting',
-'onChange',
-'onInput',
-'onLoad' ];
+const generateGenericRowTypes = (isJs) => (data) => {
+    generateGenericRowType(isJs, data, "HTMLAttributes", 1);
+    generateGenericRowType(isJs, data, "AriaAttributes", 1);
+    generateGenericRowType(isJs, data, "DOMAttributes", 2);
+    console.log("type IonicBaseAttributes r = HTMLAttributes + AriaAttributes + DOMAttributes + r");
+};
 
 
-fs.readFile('./codegen/ionic-types.txt', 'utf8', function (err,data) {
-  if (err) {
-    return console.log(err);
-  }
-  var lines = data.split(/\r?\n/);
-  console.log(process.argv[2] == 'js' ? `
-  "use strict";
-  var Ionic = require("@ionic/react");
-  `:`
+const generateGenericRowType = (isJs, data, type, closingBracesCount) => {
+    var lines = data.split(/\r?\n/).map(l => l.trim()).map(e => removeEndOfLineComment(e));
+    var region = limitToRegion(lines, type, closingBracesCount);
+    var rowTypeElements = getRowTypeElements(region);
+    printTypeDefs(rowTypeElements);
+    printRowType(type, rowTypeElements);
+};
+
+const printRowType = (type, rowTypeElements) => {
+    console.log(`type ${type} r = (`)
+    console.log(rowTypeElements.map(e => e.el).join("\n"));
+    console.log("| r )");
+};
+
+
+const printTypeDefs = (rowTypeElements) => {
+    var defs = rowTypeElements.reduce((acc, c) => acc.concat(c.typeDefs), []);
+    console.log(defs.map(d => {
+        var name = upperFist(d);
+        return `
+data ${name} = ${name}
+instance coercible${name}String  :: Coercible ${name} String
+`;
+    }).join("\n"));
+}
+
+
+const getRowTypeElements = (region) => {
+    return region.filter(
+        l => !isEmptyOrSpaces(l)).filter(
+            e => !isComment(e)).filter(e => e.includes("?:")).map(
+                e => parseGenereicRowTypeElement(e)).map(generateRowTypeElement);
+};
+
+const generateRowTypeElement = (rowEl) => {
+    const rowElementType = generateType(rowEl.type);
+    return {el: `    ${rowEl.name} :: ${rowElementType.type} |+| Undefined`, typeDefs: rowElementType.typeDefs };
+}
+
+const generateType = (typeScriptType) => {
+    if(["string", "CSSProperties", "{"].includes(typeScriptType)) return {type: "String", typeDefs: []};
+    if(["Booleanish", "boolean"].includes(typeScriptType)) return {type: "Boolean", typeDefs: []};
+    if(typeScriptType == "number") return {type: "Number", typeDefs: []}
+    if(typeScriptType == "any") return {type: "String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number)", typeDefs: []}
+    if(typeScriptType.includes("EventHandler<T>")) return {type:"EventHandler", typeDefs: []};
+    if(typeScriptType == "ReactNode") return {type: "Array JSX", typeDefs: []};
+    if(typeScriptType.includes("|")) return generateSumType(typeScriptType);
+    return {type: typeScriptType, typeDefs: [typeScriptType.replace(/\'/g,'')]};
+};
+
+const generateSumType = (typeScriptType) => {
+    const res = typeScriptType.split("|").map(
+        e => e.trim()).filter(
+            e => e != "inherit").map(
+                e => generateType(e)).reduce(
+                    (acc, val) => {
+                        return {type: acc.type.concat([val.type]), typeDefs: acc.typeDefs.concat(val.typeDefs).filter(e => !e.includes("inherit")) }
+                    }, {type:[], typeDefs:[]});
+    return {type: res.type.join(" |+| "), typeDefs: res.typeDefs};
+};
+
+const parseGenereicRowTypeElement = (codeline) =>  {
+    var s = codeline.split("?:").map(s => s.trim());
+    return {name: s[0], type: s[1].replace(';','') };
+}
+
+const isComment = (codeLine) => {
+    return codeLine.startsWith("/") || codeLine.startsWith("*");
+};
+
+const removeEndOfLineComment = (codeline) => {
+    return codeline.split("//")[0];
+};
+
+const limitToRegion = (lines, marker, closingBracesCount) => {
+    lines = lines.slice(lines.findIndex(l => l.includes(`interface ${marker}`))+1);
+    return lines.slice(0, findIndexOfNthClosingBrace(lines, closingBracesCount, 0));
+};
+
+const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
+    if(closingBraceNo == 0) return idx;
+    return findIndexOfNthClosingBrace(lines, closingBraceNo-1, 
+        lines.findIndex((l, i) => i > idx && l.includes("}")));
+};
+
+const withFileDo = (name, action) => {
+    fs.readFile(name, 'utf8', function (err,data) {
+        if (err) {
+          return console.log(err);
+        }
+        action(data);
+      });
+};
+
+const isEmptyOrSpaces = (str) => {
+    return str === null || str.match(/^ *$/) !== null;
+}
+
+const printHeader = (isJs) => {
+    console.log(isJs ? `
+    "use strict";
+    var Ionic = require("@ionic/react");
+    `:`
 module Ionic where
 import Prelude
 
 import React.Basic (JSX, ReactComponent, element)
 import React.Basic.Events (EventHandler)
 import Untagged.Coercible (class Coercible, coerce)
-import Untagged.Union (UndefinedOr)  
-  `);
-  var r = lines.map(l => parseLine(l)).filter(l => l.name.trim().length > 0).map(d => genCode(d)).join("\n");
-  console.log(r);
-});
-
-var parseLine = function(line) {
-    var n = line.split(":")[0];
-    return {name: n.replace(/-/g,'_'), props: parseProps(line.split(":")[1])};
-};
-
-var parseProps = function(str) {
-    if(str === undefined) return [];
-    return str.split("|").map(e => e.trim().replace(/\"/g,'').replace(/-/g,'_'));
+import Type.Row (type (+))
+import Untagged.Union (UndefinedOr, type (|+|))  
+    `);  
 }
 
-var genPurscriptCode = function(data){
-    var propsName = `Props_${data.name}`;
-    var compDefName = lowerFist(data.name);
-    return `
-type ${propsName} = 
-    { ${data.props.map(p => getPropDefs(p)).join(",\n")}
-    }
-
-foreign import _${compDefName} :: ReactComponent ${propsName}
-
-${compDefName} :: forall r. Coercible r ${propsName} => r -> JSX
-${compDefName} = element _${compDefName} <<< coerce
-`;
-}
-
-var genJavascriptCode = function(data){
-    var compDefName = lowerFist(data.name);
-    return `exports._${compDefName} = Ionic.${data.name};  
+const genJavascriptCode = (data) => {
+    var compDefName =data.name;
+    var ionicName = upperFist(data.name);
+    return `exports._${compDefName} = Ionic.${ionicName};  
 `;
 };
 
-var getPropDefs = function(prop) {
-    return `      ${prop} :: UndefinedOr ${getPropType(prop)}`;
+function upperFist(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-var getPropType = function(prop) {
-    if(boolProps.includes(prop)) return "Boolean";
-    if(arrayJSXPorps.includes(prop)) return "(Array JSX)";
-    if(stringProps.includes(prop)) return "String";
-    if(eventhandlerProps.includes(prop) || prop.startsWith("on")) return "EventHandler";
-    return "String";
-}
 
-function lowerFist(string) {
-    return string.charAt(0).toLowerCase() + string.slice(1);
-}
-
-var genCode = process.argv[2] == "js" ? genJavascriptCode : genPurscriptCode;
+generateIonicTypes(process.argv[2] == "js");
