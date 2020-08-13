@@ -19,27 +19,16 @@ const generateGenericRowType = (isJs, data, type, closingBracesCount) => {
     var lines = data.split(/\r?\n/).map(l => l.trim()).map(e => removeEndOfLineComment(e));
     var region = limitToRegion(lines, type, closingBracesCount);
     var rowTypeElements = getRowTypeElements(region);
-    printTypeDefs(rowTypeElements);
     printRowType(type, rowTypeElements);
 };
 
 const printRowType = (type, rowTypeElements) => {
     console.log(`type ${type} r = (`)
-    console.log(rowTypeElements.map(e => e.el).join("\n"));
+    console.log(rowTypeElements.join(",\n"));
     console.log("| r )");
 };
 
 
-const printTypeDefs = (rowTypeElements) => {
-    var defs = rowTypeElements.reduce((acc, c) => acc.concat(c.typeDefs), []);
-    console.log(defs.map(d => {
-        var name = upperFist(d);
-        return `
-data ${name} = ${name}
-instance coercible${name}String  :: Coercible ${name} String
-`;
-    }).join("\n"));
-}
 
 
 const getRowTypeElements = (region) => {
@@ -50,30 +39,29 @@ const getRowTypeElements = (region) => {
 };
 
 const generateRowTypeElement = (rowEl) => {
-    const rowElementType = generateType(rowEl.type);
-    return {el: `    ${rowEl.name} :: ${rowElementType.type} |+| Undefined`, typeDefs: rowElementType.typeDefs };
-}
+    return `    ${fixName(rowEl.name)} :: ${generateType(rowEl.type)} |+| Undefined`;
+};
+
+const fixName = (name) => {
+    return name.replace(/-/g,"").replace(/\'/g,"");
+};
 
 const generateType = (typeScriptType) => {
-    if(["string", "CSSProperties", "{"].includes(typeScriptType)) return {type: "String", typeDefs: []};
-    if(["Booleanish", "boolean"].includes(typeScriptType)) return {type: "Boolean", typeDefs: []};
-    if(typeScriptType == "number") return {type: "Number", typeDefs: []}
-    if(typeScriptType == "any") return {type: "String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number)", typeDefs: []}
-    if(typeScriptType.includes("EventHandler<T>")) return {type:"EventHandler", typeDefs: []};
-    if(typeScriptType == "ReactNode") return {type: "Array JSX", typeDefs: []};
+    if(["string", "CSSProperties", "{"].includes(typeScriptType)) return "String";
+    if(["Booleanish", "boolean"].includes(typeScriptType)) return "Boolean";
+    if(typeScriptType == "ReadonlyArray<string>") return "(Array String)";
+    if(typeScriptType == "number") return "Number"
+    if(typeScriptType == "any") return "String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number)"
+    if(typeScriptType.includes("EventHandler<T>")) return "EventHandler";
+    if(typeScriptType == "ReactNode") return "Array JSX";
     if(typeScriptType.includes("|")) return generateSumType(typeScriptType);
-    return {type: typeScriptType, typeDefs: [typeScriptType.replace(/\'/g,'')]};
+    return "String";
 };
 
 const generateSumType = (typeScriptType) => {
-    const res = typeScriptType.split("|").map(
-        e => e.trim()).filter(
-            e => e != "inherit").map(
-                e => generateType(e)).reduce(
-                    (acc, val) => {
-                        return {type: acc.type.concat([val.type]), typeDefs: acc.typeDefs.concat(val.typeDefs).filter(e => !e.includes("inherit")) }
-                    }, {type:[], typeDefs:[]});
-    return {type: res.type.join(" |+| "), typeDefs: res.typeDefs};
+    const res = distinct(typeScriptType.split("|").map(
+        e => e.trim()).filter(e => e != "inherit").map(e => generateType(e)));
+    return res.join(" |+| ");
 };
 
 const parseGenereicRowTypeElement = (codeline) =>  {
@@ -109,6 +97,10 @@ const withFileDo = (name, action) => {
       });
 };
 
+const distinct = (a) => {
+    return a.filter((value, index, self) => self.indexOf(value) === index);
+};
+
 const isEmptyOrSpaces = (str) => {
     return str === null || str.match(/^ *$/) !== null;
 }
@@ -119,13 +111,11 @@ const printHeader = (isJs) => {
     var Ionic = require("@ionic/react");
     `:`
 module Ionic where
-import Prelude
-
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
 import Type.Row (type (+))
-import Untagged.Union (UndefinedOr, type (|+|))  
+import Untagged.Union (type (|+|))  
+import Literals.Undefined (Undefined)
     `);  
 }
 
