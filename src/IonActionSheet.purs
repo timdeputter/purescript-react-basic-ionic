@@ -10,14 +10,6 @@ import Untagged.Coercible (class Coercible, coerce)
 import Untagged.Union (type (|+|))
     
     
-type ActionSheetButton = {
-    text :: String |+| Undefined,
-    role :: String |+| String |+| String |+| String |+| Undefined,
-    icon :: String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
-    handler :: EventHandler |+| Undefined
-}
-
 type IonActionSheetProps = {
     header :: String |+| Undefined,
     subHeader :: String |+| Undefined,
@@ -38,6 +30,14 @@ type IonActionSheetProps = {
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
     key :: String |+| Number
+}
+
+type ActionSheetButton = {
+    text :: String |+| Undefined,
+    role :: String |+| String |+| String |+| String |+| Undefined,
+    icon :: String |+| Undefined,
+    cssClass :: Array String |+| String |+| Undefined,
+    handler :: EventHandler |+| Undefined
 }
 
 

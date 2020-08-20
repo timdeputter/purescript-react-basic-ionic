@@ -10,6 +10,29 @@ import Untagged.Coercible (class Coercible, coerce)
 import Untagged.Union (type (|+|))
     
     
+type IonAlertProps = {
+    header :: String |+| Undefined,
+    subHeader :: String |+| Undefined,
+    message :: String |+| String |+| Undefined,
+    cssClass :: Array String |+| String |+| Undefined,
+    inputs :: Array AlertInput |+| Undefined,
+    buttons :: Array (AlertButton |+| String) |+| Undefined,
+    backdropDismiss :: Boolean |+| Undefined,
+    translucent :: Boolean |+| Undefined,
+    animated :: Boolean |+| Undefined,
+    mode :: String |+| Undefined,
+    keyboardClose :: Boolean |+| Undefined,
+    id :: String |+| Undefined,
+    enterAnimation :: String |+| Undefined,
+    leaveAnimation :: String |+| Undefined,
+    isOpen :: Boolean |+| Undefined,
+    onDidDismiss :: EventHandler |+| Undefined,
+    onDidPresent :: EventHandler |+| Undefined,
+    onWillDismiss :: EventHandler |+| Undefined,
+    onWillPresent :: EventHandler |+| Undefined,
+    key :: String |+| Number
+}
+
 type AlertButton = {
     text :: String |+| Undefined,
     role :: String |+| Undefined,
@@ -112,29 +135,6 @@ type AlertInput = {
     max :: String |+| Number |+| Undefined,
     cssClass :: Array String |+| String |+| Undefined,
     attributes :: AlertInputAttributes |+| AlertTextareaAttributes |+| Undefined
-}
-
-type IonAlertProps = {
-    header :: String |+| Undefined,
-    subHeader :: String |+| Undefined,
-    message :: String |+| String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
-    inputs :: Array AlertInput |+| Undefined,
-    buttons :: Array (AlertButton |+| String) |+| Undefined,
-    backdropDismiss :: Boolean |+| Undefined,
-    translucent :: Boolean |+| Undefined,
-    animated :: Boolean |+| Undefined,
-    mode :: String |+| Undefined,
-    keyboardClose :: Boolean |+| Undefined,
-    id :: String |+| Undefined,
-    enterAnimation :: String |+| Undefined,
-    leaveAnimation :: String |+| Undefined,
-    isOpen :: Boolean |+| Undefined,
-    onDidDismiss :: EventHandler |+| Undefined,
-    onDidPresent :: EventHandler |+| Undefined,
-    onWillDismiss :: EventHandler |+| Undefined,
-    onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
 }
 
 

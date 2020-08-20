@@ -6,6 +6,7 @@ var generateIonicTypes = async (isJs) => {
     await generateComponent("Alert", isJs);
     await generateComponent("ActionSheet", isJs);
     await generateComponent("Loading", isJs);
+    await generateComponent("Picker", isJs);
 };
 
 
@@ -19,11 +20,16 @@ const generateComponent = async (componentName, isJs) => {
         return;
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
+    var outTypes = [];
     await printRowType(`${upperName}Props`, flatten([], [
-        await parseInterfaceOptions(componentName, lines, fileWriter), 
-        await parseReactProps('Controller', lines, fileWriter), 
-        await parseReactProps('Overlay', lines, fileWriter),
+        await parseInterfaceOptions(componentName, lines, outTypes), 
+        await parseReactProps('Controller', lines, outTypes), 
+        await parseReactProps('Overlay', lines, outTypes),
         parseRefAttributes(lines)]), false, fileWriter);
+    for (let index = 0; index < outTypes.length; index++) {
+        const element = outTypes[index];
+        await printRowType(element.type, element.rows, false, fileWriter);
+    }
     await generateComponentFunc(lowerName, fileWriter);
 };
 
@@ -176,7 +182,7 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
 };
 
 const generateRowType = async (lines, type, closingBracesCount, generateOpenRow, writeOutput) => {
-    await printRowType(type, await getRowTypeElements(type, lines, closingBracesCount, writeOutput), generateOpenRow, writeOutput);
+    writeOutput.push({type: type, rows: await getRowTypeElements(type, lines, closingBracesCount, writeOutput)});
 };
 
 const generateArrayType = async (typeScriptType, lines, writeOutput) => {
