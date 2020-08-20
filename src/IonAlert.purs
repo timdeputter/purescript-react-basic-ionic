@@ -17,8 +17,27 @@ type AlertButton = {
     handler :: EventHandler |+| Undefined
 }
 
-type AlertInputAttributes = {
 type AlertTextareaAttributes = {
+    autoFocus :: Boolean |+| Undefined,
+    autofocus :: Boolean |+| String |+| Undefined,
+    cols :: Number |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    form :: String |+| Undefined,
+    maxLength :: Number |+| Undefined,
+    maxlength :: Number |+| String |+| Undefined,
+    minLength :: Number |+| Undefined,
+    minlength :: Number |+| String |+| Undefined,
+    name :: String |+| Undefined,
+    placeholder :: String |+| Undefined,
+    readOnly :: Boolean |+| Undefined,
+    readonly :: Boolean |+| String |+| Undefined,
+    required :: Boolean |+| Undefined,
+    rows :: Number |+| Undefined,
+    value :: String |+| Array String |+| Number |+| Undefined,
+    wrap :: String |+| Undefined
+}
+
+type AlertInputAttributes = {
     accept :: String |+| Undefined,
     allowdirs :: Boolean |+| Undefined,
     alt :: String |+| Undefined,
@@ -77,25 +96,6 @@ type AlertTextareaAttributes = {
     webkitdirectory :: Boolean |+| Undefined,
     webkitEntries :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| Undefined,
     width :: Number |+| String |+| Undefined
-    autoFocus :: Boolean |+| Undefined,
-    autofocus :: Boolean |+| String |+| Undefined,
-    cols :: Number |+| Undefined,
-    disabled :: Boolean |+| Undefined,
-    form :: String |+| Undefined,
-    maxLength :: Number |+| Undefined,
-    maxlength :: Number |+| String |+| Undefined,
-    minLength :: Number |+| Undefined,
-    minlength :: Number |+| String |+| Undefined,
-    name :: String |+| Undefined,
-    placeholder :: String |+| Undefined,
-    readOnly :: Boolean |+| Undefined,
-    readonly :: Boolean |+| String |+| Undefined,
-    required :: Boolean |+| Undefined,
-    rows :: Number |+| Undefined,
-    value :: String |+| Array String |+| Number |+| Undefined,
-    wrap :: String |+| Undefined
-}
-
 }
 
 type AlertInput = {
@@ -115,12 +115,6 @@ type AlertInput = {
 }
 
 type IonAlertProps = {
-
-foreign import _ionAlert :: ReactComponent IonAlertProps
-
-ionAlert :: forall r. Coercible r IonAlertProps => r -> JSX
-ionAlert = element _ionAlert <<< coerce
-
     header :: String |+| Undefined,
     subHeader :: String |+| Undefined,
     message :: String |+| String |+| Undefined,
@@ -142,4 +136,10 @@ ionAlert = element _ionAlert <<< coerce
     onWillPresent :: EventHandler |+| Undefined,
     key :: String |+| Number
 }
+
+
+foreign import _ionAlert :: ReactComponent IonAlertProps
+
+ionAlert :: forall r. Coercible r IonAlertProps => r -> JSX
+ionAlert = element _ionAlert <<< coerce
 
