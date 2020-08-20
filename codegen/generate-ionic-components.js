@@ -20,15 +20,15 @@ const generateComponent = async (componentName, isJs) => {
         return;
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
-    var outTypes = [];
+    var subTypes = [];
     await printRowType(`${upperName}Props`, flatten([], [
-        await parseInterfaceOptions(componentName, lines, outTypes), 
-        await parseReactProps('Controller', lines, outTypes), 
-        await parseReactProps('Overlay', lines, outTypes),
-        parseRefAttributes(lines)]), false, fileWriter);
-    for (let index = 0; index < outTypes.length; index++) {
-        const element = outTypes[index];
-        await printRowType(element.type, element.rows, false, fileWriter);
+        await parseInterfaceOptions(componentName, lines, subTypes), 
+        await parseReactProps('Controller', lines, subTypes), 
+        await parseReactProps('Overlay', lines, subTypes),
+        parseRefAttributes(lines)]), fileWriter);
+    for (let index = 0; index < subTypes.length; index++) {
+        const element = subTypes[index];
+        await printRowType(element.type, element.rows, fileWriter);
     }
     await generateComponentFunc(lowerName, fileWriter);
 };
@@ -83,33 +83,6 @@ const getPathName = (name) => {
     return indizes.reduce((a, i) => i == 0 ? lowerFist(a) : `${a.substring(0,i)}-${lowerFist(a.substring(i))}`, name);
 };
 
-const findUppercaseLetters = (name) => {
-    const res = [];
-    for (let index = 0; index < name.length; index++) {
-        const c = name[index];
-        if(c == c.toUpperCase()) res.push(index);
-    }
-    return res;
-};
-
-const sequence = async (array) => {
-    var r = [];
-    for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        r.push(await element);
-    }
-    return r;
-};
-
-const flatten = (initialVal, arr) => {
-    var res = initialVal;
-    arr.forEach(subArr => {
-        res = res.concat(subArr);
-    });
-    return res;
-};
-
-
 
 const getBaseTypeName = (lines, type) => {
     var extensionDef = `export interface ${type} extends JSXBase.`;
@@ -127,13 +100,8 @@ const getStatements = (data) => {
     return data.split(";").map(l => l.trim()).map(e => removeEndOfLineComment(e));
 };
 
-
-const printRowType = async (type, rowTypeElements, generateOpenRow, writeOutput) => {
-    if(generateOpenRow) await writeOutput(`type ${type} r = (`);
-    else await writeOutput(`type ${type} = {`);
-    await writeOutput(rowTypeElements.join(",\n"));
-    if(generateOpenRow) await writeOutput("| r )\n");
-    else  await writeOutput("}\n");
+const printRowType = async (type, rowTypeElements, writeOutput) => {
+    await writeOutput(`type ${type} = {\n${rowTypeElements.join(",\n")}\n}\n`);
 };
 
 const getRowTypeElements = async (type, lines, closingBracesCount, writeOutput) => {
@@ -167,7 +135,7 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
     if(typeScriptType.includes("=>")) return "EventHandler";
     if(typeScriptType.endsWith("[]")) return await generateArrayType(typeScriptType, lines, writeOutput);
     if(lines.some(l => l.includes(`export interface ${typeScriptType}`))) {
-        await generateRowType(lines, typeScriptType, 1, false, writeOutput);
+        await generateRowType(lines, typeScriptType, 1, writeOutput);
         return typeScriptType;
     }
     if(["string", "CSSProperties", "{"].includes(typeScriptType)) return "String";
@@ -181,7 +149,7 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
     return "String";
 };
 
-const generateRowType = async (lines, type, closingBracesCount, generateOpenRow, writeOutput) => {
+const generateRowType = async (lines, type, closingBracesCount, writeOutput) => {
     writeOutput.push({type: type, rows: await getRowTypeElements(type, lines, closingBracesCount, writeOutput)});
 };
 
@@ -227,17 +195,6 @@ const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
         lines.findIndex((l, i) => i > idx && l.includes("}")));
 };
 
-const withFileDo = async (name) => {
-    return await fs.readFileSync(name, 'utf8');
-};
-
-const distinct = (a) => {
-    return a.filter((value, index, self) => self.indexOf(value) === index);
-};
-
-const isEmptyOrSpaces = (str) => {
-    return str === null || str.match(/^ *$/) !== null;
-}
 
 const printHeader = async (isJs, writeOutput) => {
     await writeOutput(isJs ? `
@@ -270,6 +227,44 @@ function upperFist(string) {
 
 function lowerFist(string) {
     return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
+const findUppercaseLetters = (name) => {
+    const res = [];
+    for (let index = 0; index < name.length; index++) {
+        const c = name[index];
+        if(c == c.toUpperCase()) res.push(index);
+    }
+    return res;
+};
+
+const sequence = async (array) => {
+    var r = [];
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        r.push(await element);
+    }
+    return r;
+};
+
+const flatten = (initialVal, arr) => {
+    var res = initialVal;
+    arr.forEach(subArr => {
+        res = res.concat(subArr);
+    });
+    return res;
+};
+
+const withFileDo = async (name) => {
+    return await fs.readFileSync(name, 'utf8');
+};
+
+const distinct = (a) => {
+    return a.filter((value, index, self) => self.indexOf(value) === index);
+};
+
+const isEmptyOrSpaces = (str) => {
+    return str === null || str.match(/^ *$/) !== null;
 }
 
 generateIonicTypes(process.argv[2] == "js");
