@@ -1,5 +1,5 @@
 
-module Ionic where
+module Ionic.Loading where
 
 import Prelude
 

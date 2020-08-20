@@ -14,7 +14,7 @@ const generateComponent = async (componentName, isJs) => {
     var lowerName = `ion${componentName}`;
     var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
-    await printHeader(isJs, fileWriter);
+    await printHeader(isJs, componentName, fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
         return;
@@ -43,7 +43,7 @@ const getFileWriter = async (componentName, isJs) => {
 const parseReactProps = async (name, lines, writeOutput) => {
     if(lines.some(l => l.includes(`import(\"./create${name}Component\").React${name}Props`))){
         var data = await withFileDo(`./node_modules/@ionic/react/dist/types/components/create${name}Component.d.ts`);    
-        return await getRowTypeElements(`React${name}Props`, getLineData(data), 1, writeOutput);
+        return await getRowTypeElements(`React${name}Props`, getLineData(data), writeOutput);
     }
     return [];
 };
@@ -71,7 +71,7 @@ const parseInterfaceOptions = async (componentName, lines, writeOutput) => {
         if(line.match(s)){
             var sublines = getLineData(await withFileDo(
                 `./node_modules/@ionic/core/dist/types/components/${componentPathName}/${componentPathName}-interface.d.ts`));
-            return await getRowTypeElements(`${componentName}Options`, sublines, 1, writeOutput);
+            return await getRowTypeElements(`${componentName}Options`, sublines, writeOutput);
         }
         return [];
     }));
@@ -104,18 +104,18 @@ const printRowType = async (type, rowTypeElements, writeOutput) => {
     await writeOutput(`type ${type} = {\n${rowTypeElements.join(",\n")}\n}\n`);
 };
 
-const getRowTypeElements = async (type, lines, closingBracesCount, writeOutput) => {
+const getRowTypeElements = async (type, lines, writeOutput) => {
     var baseName = getBaseTypeName(lines, type);
     if(baseName != undefined) {
         var data = await withFileDo("./node_modules/@ionic/core/dist/types/stencil-public-runtime.d.ts");
-        return (await getRowTypesFromRegion(type, lines, closingBracesCount, writeOutput)).concat(
-            await getRowTypeElements(baseName, getLineData(data), 1, writeOutput));
+        return (await getRowTypesFromRegion(type, lines, writeOutput)).concat(
+            await getRowTypeElements(baseName, getLineData(data), writeOutput));
     }
-    return await getRowTypesFromRegion(type, lines, closingBracesCount, writeOutput);
+    return await getRowTypesFromRegion(type, lines, writeOutput);
 };
 
-const getRowTypesFromRegion = async (type, lines, closingBracesCount, writeOutput) => {
-    var region = getStatements(flatten("", limitToRegion(lines, type, closingBracesCount)));
+const getRowTypesFromRegion = async (type, lines, writeOutput) => {
+    var region = getStatements(flatten("", limitToRegion(lines, type)));
     return await sequence(region.filter(
         l => !isEmptyOrSpaces(l)).filter(
             e => !isComment(e)).filter(e => e.includes(":")).map(
@@ -135,7 +135,7 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
     if(typeScriptType.includes("=>")) return "EventHandler";
     if(typeScriptType.endsWith("[]")) return await generateArrayType(typeScriptType, lines, writeOutput);
     if(lines.some(l => l.includes(`export interface ${typeScriptType}`))) {
-        await generateRowType(lines, typeScriptType, 1, writeOutput);
+        await generateRowType(lines, typeScriptType, writeOutput);
         return typeScriptType;
     }
     if(["string", "CSSProperties", "{"].includes(typeScriptType)) return "String";
@@ -149,8 +149,8 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
     return "String";
 };
 
-const generateRowType = async (lines, type, closingBracesCount, writeOutput) => {
-    writeOutput.push({type: type, rows: await getRowTypeElements(type, lines, closingBracesCount, writeOutput)});
+const generateRowType = async (lines, type, writeOutput) => {
+    writeOutput.push({type: type, rows: await getRowTypeElements(type, lines, writeOutput)});
 };
 
 const generateArrayType = async (typeScriptType, lines, writeOutput) => {
@@ -183,10 +183,10 @@ const removeEndOfLineComment = (codeline) => {
     return codeline.split("//")[0];
 };
 
-const limitToRegion = (lines, marker, closingBracesCount) => {
+const limitToRegion = (lines, marker) => {
     lines = lines.slice(lines.findIndex(l => l.includes(`interface ${marker}`))+1);
     if(lines.length > 0 && lines[0].includes('}')) return [];
-    return lines.slice(0, findIndexOfNthClosingBrace(lines, closingBracesCount, 0));
+    return lines.slice(0, findIndexOfNthClosingBrace(lines, 1, 0));
 };
 
 const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
@@ -196,12 +196,12 @@ const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
 };
 
 
-const printHeader = async (isJs, writeOutput) => {
+const printHeader = async (isJs, name, writeOutput) => {
     await writeOutput(isJs ? `
     "use strict";
     var Ionic = require("@ionic/react");
     `:`
-module Ionic where
+module Ionic.${name} where
 
 import Prelude
 

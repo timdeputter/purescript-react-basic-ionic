@@ -1,5 +1,5 @@
 
-module Ionic where
+module Ionic.Alert where
 
 import Prelude
 
