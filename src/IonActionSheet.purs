@@ -31,7 +31,7 @@ type IonActionSheetProps = {
     id :: String |+| Undefined,
     enterAnimation :: String |+| Undefined,
     leaveAnimation :: String |+| Undefined,
-    children :: String |+| Undefined,
+    children :: Array JSX |+| Undefined,
     isOpen :: Boolean |+| Undefined,
     onDidDismiss :: EventHandler |+| Undefined,
     onDidPresent :: EventHandler |+| Undefined,

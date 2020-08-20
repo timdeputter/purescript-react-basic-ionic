@@ -1,15 +1,14 @@
 const fs = require('fs');
 const util = require('util');
-const Parser = require('ts-types-parser');
-const parser = new Parser;
+
 
 var generateIonicTypes = async (isJs) => {
-    await generateAlertComponent("Alert", isJs);
-    await generateAlertComponent("ActionSheet", isJs);
+    await generateComponent("Alert", isJs);
+    await generateComponent("ActionSheet", isJs);
 };
 
 
-const generateAlertComponent = async (componentName, isJs) => {
+const generateComponent = async (componentName, isJs) => {
     var lowerName = `ion${componentName}`;
     var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
@@ -21,8 +20,8 @@ const generateAlertComponent = async (componentName, isJs) => {
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
     await printRowType(`${upperName}Props`, flatten([], [
         await parseInterfaceOptions(componentName, lines, fileWriter), 
-        await parseControllerProps(lines, fileWriter), 
-        await parseOverlayProps(lines, fileWriter),
+        await parseReactProps('Controller', lines, fileWriter), 
+        await parseReactProps('Overlay', lines, fileWriter),
         parseRefAttributes(lines)]), false, fileWriter);
     await generateComponentFunc(lowerName, fileWriter);
 };
@@ -34,18 +33,10 @@ const getFileWriter = async (componentName, isJs) => {
     return async data => await fs.appendFileSync(path, data + "\n");
 };
 
-const parseControllerProps = async (lines, writeOutput) => {
-    if(lines.some(l => l.includes("import(\"./createControllerComponent\").ReactControllerProps"))){
-        var data = await withFileDo("./node_modules/@ionic/react/dist/types/components/createControllerComponent.d.ts");    
-        return await getRowTypeElements("ReactControllerProps", getLineData(data), 1, writeOutput);
-    }
-    return [];
-};
-
-const parseOverlayProps = async (lines, writeOutput) => {
-    if(lines.some(l => l.includes("import(\"./createOverlayComponent\").ReactOverlayProps"))){
-        var data = await withFileDo("./node_modules/@ionic/react/dist/types/components/createOverlayComponent.d.ts");    
-        return await getRowTypeElements("ReactOverlayProps", getLineData(data), 1, writeOutput);
+const parseReactProps = async (name, lines, writeOutput) => {
+    if(lines.some(l => l.includes(`import(\"./create${name}Component\").React${name}Props`))){
+        var data = await withFileDo(`./node_modules/@ionic/react/dist/types/components/create${name}Component.d.ts`);    
+        return await getRowTypeElements(`React${name}Props`, getLineData(data), 1, writeOutput);
     }
     return [];
 };
@@ -178,7 +169,7 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
     if(typeScriptType == "number") return "Number"
     if(typeScriptType == "any") return "String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number)"
     if(typeScriptType.includes("EventHandler<T>")) return "EventHandler";
-    if(typeScriptType == "ReactNode") return "Array JSX";
+    if(typeScriptType.includes("ReactNode")) return "Array JSX";
     if(typeScriptType.includes("|")) return await generateSumType(typeScriptType, lines, writeOutput);
     return "String";
 };
