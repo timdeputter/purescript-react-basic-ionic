@@ -9,7 +9,9 @@
     "@types/react": "^16.9.46",
     "parcel": "^1.12.4",
     "purescript": "^0.13.6",
-    "spago": "^0.15.2"
+    "spago": "^0.15.2",
+    "ts-types-parser": "^1.0.3",
+    "typescript-parser": "^2.6.1"
   },
   "scripts": {
     "build": "spago build",
