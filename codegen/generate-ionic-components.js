@@ -3,10 +3,11 @@ const util = require('util');
 
 
 var generateIonicTypes = async (isJs) => {
-    await generateComponent("Alert", isJs);
-    await generateComponent("ActionSheet", isJs);
-    await generateComponent("Loading", isJs);
-    await generateComponent("Picker", isJs);
+    // await generateComponent("Alert", isJs);
+    // await generateComponent("ActionSheet", isJs);
+    // await generateComponent("Loading", isJs);
+    // await generateComponent("Picker", isJs);
+    await generateComponent("Popover", isJs);
 };
 
 
@@ -21,8 +22,9 @@ const generateComponent = async (componentName, isJs) => {
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
     var subTypes = [];
+    var omitters = getOmitters(lines, componentName);
     await printRowType(`${upperName}Props`, flatten([], [
-        await parseInterfaceOptions(componentName, lines, subTypes), 
+        await parseInterfaceOptions(componentName, lines, subTypes, omitters), 
         await parseReactProps('Controller', lines, subTypes), 
         await parseReactProps('Overlay', lines, subTypes),
         parseRefAttributes(lines)]), fileWriter);
@@ -31,6 +33,23 @@ const generateComponent = async (componentName, isJs) => {
         await printRowType(element.type, element.rows, fileWriter);
     }
     await generateComponentFunc(lowerName, fileWriter);
+};
+
+const getOmitters = (lines, type) => {
+    var s = lines.filter(l => l.includes(`Omit<${type}Options`))[0];
+    var omitters = [];
+    if(s){
+        extractOmitters(omitters, s)
+    }
+    return omitters;
+};
+
+const extractOmitters = (omitters, s) => {
+    var omittedElements = /'\w+'/g.exec(s);
+    if(omittedElements) {
+        omitters.push(omittedElements[0].slice(1).slice(0,-1));
+        extractOmitters(omitters, s.substring(omittedElements.index + omittedElements[0].length))
+    }
 };
 
 const getFileWriter = async (componentName, isJs) => {
@@ -64,14 +83,14 @@ ${name} = element _${name} <<< coerce
 `);    
 };
 
-const parseInterfaceOptions = async (componentName, lines, writeOutput) => {
+const parseInterfaceOptions = async (componentName, lines, writeOutput, omitters) => {
     var componentPathName = getPathName(componentName);
     var r = await sequence(lines.map(async line => {
         var s = `import {((\\w|\\s|,)*)${componentName}Options( as (\\w)+OptionsCore)? } from '@ionic\\/core';`;
         if(line.match(s)){
             var sublines = getLineData(await withFileDo(
                 `./node_modules/@ionic/core/dist/types/components/${componentPathName}/${componentPathName}-interface.d.ts`));
-            return await getRowTypeElements(`${componentName}Options`, sublines, writeOutput);
+            return await getRowTypeElements(`${componentName}Options`, sublines, omitters, writeOutput);
         }
         return [];
     }));
@@ -104,38 +123,39 @@ const printRowType = async (type, rowTypeElements, writeOutput) => {
     await writeOutput(`type ${type} = {\n${rowTypeElements.join(",\n")}\n}\n`);
 };
 
-const getRowTypeElements = async (type, lines, writeOutput) => {
+const getRowTypeElements = async (type, lines, omitters, writeOutput) => {
     var baseName = getBaseTypeName(lines, type);
     if(baseName != undefined) {
         var data = await withFileDo("./node_modules/@ionic/core/dist/types/stencil-public-runtime.d.ts");
-        return (await getRowTypesFromRegion(type, lines, writeOutput)).concat(
-            await getRowTypeElements(baseName, getLineData(data), writeOutput));
+        return (await getRowTypesFromRegion(type, lines, omitters, writeOutput)).concat(
+            await getRowTypeElements(baseName, getLineData(data), omitters, writeOutput));
     }
-    return await getRowTypesFromRegion(type, lines, writeOutput);
+    return await getRowTypesFromRegion(type, lines, omitters, writeOutput);
 };
 
-const getRowTypesFromRegion = async (type, lines, writeOutput) => {
-    var region = getStatements(flatten("", limitToRegion(lines, type)));
-    return await sequence(region.filter(
-        l => !isEmptyOrSpaces(l)).filter(
-            e => !isComment(e)).filter(e => e.includes(":")).map(
-                e => parseGenereicRowTypeElement(e)).map(generateRowTypeElement(lines, writeOutput)));
+const getRowTypesFromRegion = async (type, lines, omitters, writeOutput) => {
+    var region = limitToRegion(lines, type);
+    var statements = getStatements(flatten("", region));
+    return await sequence(statements.filter(l => !isEmptyOrSpaces(l)).filter(
+        e => !isComment(e)).filter(e => e.includes(":")).map(e => parseGenereicRowTypeElement(e)).filter(
+            e => !omitters.includes(e.name)).map(generateRowTypeElement(lines, omitters, writeOutput)));
 
 };
 
-const generateRowTypeElement = (lines, writeOutput) => async (rowEl) => {
-    return `    ${fixName(rowEl.name)} :: ${await generateType(rowEl.type, lines, writeOutput)} |+| Undefined`;
+
+const generateRowTypeElement = (lines, omitters, writeOutput) => async (rowEl) => {
+    return `    ${fixName(rowEl.name)} :: ${await generateType(rowEl.type, lines, omitters, writeOutput)} |+| Undefined`;
 };
 
 const fixName = (name) => {
     return name.replace(/-/g,"").replace(/\'/g,"");
 };
 
-const generateType = async (typeScriptType, lines, writeOutput) => {
+const generateType = async (typeScriptType, lines, omitters, writeOutput) => {
     if(typeScriptType.includes("=>")) return "EventHandler";
-    if(typeScriptType.endsWith("[]")) return await generateArrayType(typeScriptType, lines, writeOutput);
+    if(typeScriptType.endsWith("[]")) return await generateArrayType(typeScriptType, lines, omitters, writeOutput);
     if(lines.some(l => l.includes(`export interface ${typeScriptType}`))) {
-        await generateRowType(lines, typeScriptType, writeOutput);
+        writeOutput.push({type: typeScriptType, rows: await getRowTypeElements(typeScriptType, lines, omitters, writeOutput)});
         return typeScriptType;
     }
     if(["string", "CSSProperties", "{"].includes(typeScriptType)) return "String";
@@ -145,26 +165,23 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
     if(typeScriptType == "any") return "String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number)"
     if(typeScriptType.includes("EventHandler<T>")) return "EventHandler";
     if(typeScriptType.includes("ReactNode")) return "Array JSX";
-    if(typeScriptType.includes("|")) return await generateSumType(typeScriptType, lines, writeOutput);
+    if(typeScriptType.includes("|")) return await generateSumType(typeScriptType, lines, omitters, writeOutput);
     return "String";
 };
 
-const generateRowType = async (lines, type, writeOutput) => {
-    writeOutput.push({type: type, rows: await getRowTypeElements(type, lines, writeOutput)});
-};
 
-const generateArrayType = async (typeScriptType, lines, writeOutput) => {
+const generateArrayType = async (typeScriptType, lines, omitters, writeOutput) => {
     typeScriptType = typeScriptType.slice(0,-2);
     if(typeScriptType.startsWith("(") && typeScriptType.endsWith(")")) {
         typeScriptType = typeScriptType.slice(1,typeScriptType.length).slice(0,-1);
-        return `Array (${await generateType(typeScriptType, lines, writeOutput)})`;
+        return `Array (${await generateType(typeScriptType, lines, omitters, writeOutput)})`;
     };
-    return `Array ${await generateType(typeScriptType, lines, writeOutput)}`;
+    return `Array ${await generateType(typeScriptType, lines, omitters, writeOutput)}`;
 };
 
-const generateSumType = async (typeScriptType, lines, writeOutput) => {
+const generateSumType = async (typeScriptType, lines, omitters, writeOutput) => {
     const res = await sequence(distinct(typeScriptType.split("|").map(
-        e => e.trim()).filter(e => e != "inherit").map(async e => await generateType(e, lines, writeOutput))));
+        e => e.trim()).filter(e => e != "inherit").map(async e => await generateType(e, lines, omitters, writeOutput))));
     return res.join(" |+| ");
 };
 
