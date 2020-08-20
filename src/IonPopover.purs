@@ -11,6 +11,8 @@ import Untagged.Union (type (|+|))
     
     
 type IonPopoverProps = {
+    component :: String |+| Undefined,
+    componentProps :: String |+| Undefined,
     showBackdrop :: Boolean |+| Undefined,
     backdropDismiss :: Boolean |+| Undefined,
     translucent :: Boolean |+| Undefined,

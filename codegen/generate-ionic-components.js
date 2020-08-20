@@ -3,10 +3,10 @@ const util = require('util');
 
 
 var generateIonicTypes = async (isJs) => {
-    // await generateComponent("Alert", isJs);
-    // await generateComponent("ActionSheet", isJs);
-    // await generateComponent("Loading", isJs);
-    // await generateComponent("Picker", isJs);
+    await generateComponent("Alert", isJs);
+    await generateComponent("ActionSheet", isJs);
+    await generateComponent("Loading", isJs);
+    await generateComponent("Picker", isJs);
     await generateComponent("Popover", isJs);
 };
 
@@ -22,11 +22,11 @@ const generateComponent = async (componentName, isJs) => {
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
     var subTypes = [];
-    var omitters = getOmitters(lines, componentName);
+    var omitters = getPickers(lines, componentName);
     await printRowType(`${upperName}Props`, flatten([], [
         await parseInterfaceOptions(componentName, lines, subTypes, omitters), 
-        await parseReactProps('Controller', lines, subTypes), 
-        await parseReactProps('Overlay', lines, subTypes),
+        await parseReactProps('Controller', lines, subTypes, omitters), 
+        await parseReactProps('Overlay', lines, subTypes, omitters),
         parseRefAttributes(lines)]), fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
@@ -35,20 +35,20 @@ const generateComponent = async (componentName, isJs) => {
     await generateComponentFunc(lowerName, fileWriter);
 };
 
-const getOmitters = (lines, type) => {
-    var s = lines.filter(l => l.includes(`Omit<${type}Options`))[0];
-    var omitters = [];
+const getPickers = (lines, type) => {
+    var s = lines.filter(l => l.includes(`Pick<${type}Options`))[0];
+    var e = [];
     if(s){
-        extractOmitters(omitters, s)
+        extractPickers(e, s)
     }
-    return omitters;
+    return e;
 };
 
-const extractOmitters = (omitters, s) => {
-    var omittedElements = /'\w+'/g.exec(s);
-    if(omittedElements) {
-        omitters.push(omittedElements[0].slice(1).slice(0,-1));
-        extractOmitters(omitters, s.substring(omittedElements.index + omittedElements[0].length))
+const extractPickers = (pickers, s) => {
+    var match = /'\w+'/g.exec(s);
+    if(match) {
+        pickers.push(match[0].slice(1).slice(0,-1));
+        extractPickers(pickers, s.substring(match.index + match[0].length))
     }
 };
 
@@ -59,10 +59,10 @@ const getFileWriter = async (componentName, isJs) => {
     return async data => await fs.appendFileSync(path, data + "\n");
 };
 
-const parseReactProps = async (name, lines, writeOutput) => {
+const parseReactProps = async (name, lines, writeOutput, omitters) => {
     if(lines.some(l => l.includes(`import(\"./create${name}Component\").React${name}Props`))){
         var data = await withFileDo(`./node_modules/@ionic/react/dist/types/components/create${name}Component.d.ts`);    
-        return await getRowTypeElements(`React${name}Props`, getLineData(data), writeOutput);
+        return await getRowTypeElements(`React${name}Props`, getLineData(data), omitters, writeOutput);
     }
     return [];
 };
@@ -138,9 +138,14 @@ const getRowTypesFromRegion = async (type, lines, omitters, writeOutput) => {
     var statements = getStatements(flatten("", region));
     return await sequence(statements.filter(l => !isEmptyOrSpaces(l)).filter(
         e => !isComment(e)).filter(e => e.includes(":")).map(e => parseGenereicRowTypeElement(e)).filter(
-            e => !omitters.includes(e.name)).map(generateRowTypeElement(lines, omitters, writeOutput)));
-
+            e => isPicked(e, omitters)).map(generateRowTypeElement(lines, omitters, writeOutput)));
 };
+
+const isPicked = (e, pickers) => {
+    if(pickers && pickers.length > 0)
+        return pickers.includes(e.name)
+    return true;
+}
 
 
 const generateRowTypeElement = (lines, omitters, writeOutput) => async (rowEl) => {
