@@ -5,6 +5,7 @@ const util = require('util');
 var generateIonicTypes = async (isJs) => {
     await generateComponent("Alert", isJs);
     await generateComponent("ActionSheet", isJs);
+    await generateComponent("Loading", isJs);
 };
 
 
