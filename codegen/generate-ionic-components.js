@@ -11,21 +11,23 @@ var generateIonicTypes = async (isJs) => {
 const generateAlertComponent = async (componentName, isJs) => {
     var lowerName = componentName;
     var upperName = upperFist(componentName);
-    var fileWriter = getFileWriter(upperName, isJs);
-    printHeader(isJs, fileWriter);
+    var fileWriter = await getFileWriter(upperName, isJs);
+    await printHeader(isJs, fileWriter);
     if(isJs){
-        genJavascriptCode(lowerName, fileWriter);
+        await genJavascriptCode(lowerName, fileWriter);
         return;
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
     printRowType(`${upperName}Props`, flatten([], [await parseInterfaceOptions(lines, fileWriter), 
         await parseControllerProps(lines, fileWriter), parseRefAttributes(lines)]), false, fileWriter);
-    generateComponentFunc(lowerName, fileWriter);
+    await generateComponentFunc(lowerName, fileWriter);
 };
 
-const getFileWriter = (componentName, isJs) => {
+const getFileWriter = async (componentName, isJs) => {
     const extension = isJs ? ".js" : ".purs";
-    return data => fs.appendFileSync(`./src/${componentName}${extension}`, data + "\n");
+    const path = `./src/${componentName}${extension}`;
+    await fs.writeFileSync(path,"");
+    return async data => await fs.appendFileSync(path, data + "\n");
 };
 
 const parseControllerProps = async (lines, writeOutput) => {
@@ -43,8 +45,8 @@ const parseRefAttributes = (lines) => {
     return [];
 };
 
-const generateComponentFunc = (name, writeOutput) => {
-    return writeOutput(`
+const generateComponentFunc = async (name, writeOutput) => {
+    return await writeOutput(`
 foreign import _${name} :: ReactComponent ${upperFist(name)}Props
 
 ${name} :: forall r. Coercible r ${upperFist(name)}Props => r -> JSX
@@ -93,12 +95,12 @@ const getStatements = (data) => {
 };
 
 
-const printRowType = (type, rowTypeElements, generateOpenRow, writeOutput) => {
-    if(generateOpenRow) writeOutput(`type ${type} r = (`);
-    else writeOutput(`type ${type} = {`);
-    writeOutput(rowTypeElements.join(",\n"));
-    if(generateOpenRow) writeOutput("| r )\n");
-    else  writeOutput("}\n");
+const printRowType = async (type, rowTypeElements, generateOpenRow, writeOutput) => {
+    if(generateOpenRow) await writeOutput(`type ${type} r = (`);
+    else await writeOutput(`type ${type} = {`);
+    await writeOutput(rowTypeElements.join(",\n"));
+    if(generateOpenRow) await writeOutput("| r )\n");
+    else  await writeOutput("}\n");
 };
 
 const getRowTypeElements = async (type, lines, closingBracesCount, writeOutput) => {
@@ -129,6 +131,7 @@ const fixName = (name) => {
 };
 
 const generateType = async (typeScriptType, lines, writeOutput) => {
+    if(typeScriptType.includes("=>")) return "EventHandler";
     if(typeScriptType.endsWith("[]")) return await generateArrayType(typeScriptType, lines, writeOutput);
     if(lines.some(l => l.includes(`export interface ${typeScriptType}`))) {
         await generateRowType(lines, typeScriptType, 1, false, writeOutput);
@@ -146,7 +149,7 @@ const generateType = async (typeScriptType, lines, writeOutput) => {
 };
 
 const generateRowType = async (lines, type, closingBracesCount, generateOpenRow, writeOutput) => {
-    printRowType(type, await getRowTypeElements(type, lines, closingBracesCount, writeOutput), generateOpenRow, writeOutput);
+    await printRowType(type, await getRowTypeElements(type, lines, closingBracesCount, writeOutput), generateOpenRow, writeOutput);
 };
 
 const generateArrayType = async (typeScriptType, lines, writeOutput) => {
@@ -203,8 +206,8 @@ const isEmptyOrSpaces = (str) => {
     return str === null || str.match(/^ *$/) !== null;
 }
 
-const printHeader = (isJs, writeOutput) => {
-    writeOutput(isJs ? `
+const printHeader = async (isJs, writeOutput) => {
+    await writeOutput(isJs ? `
     "use strict";
     var Ionic = require("@ionic/react");
     `:`
@@ -221,10 +224,10 @@ import Untagged.Union (type (|+|))
     `);  
 }
 
-const genJavascriptCode = (name, writeOutput) => {
+const genJavascriptCode = async (name, writeOutput) => {
     var compDefName =name;
     var ionicName = upperFist(name);
-    writeOutput(`exports._${compDefName} = Ionic.${ionicName};  
+    await writeOutput(`exports._${compDefName} = Ionic.${ionicName};  
 `);
 };
 

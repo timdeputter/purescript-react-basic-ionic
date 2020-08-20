@@ -14,10 +14,11 @@ type AlertButton = {
     text :: String |+| Undefined,
     role :: String |+| Undefined,
     cssClass :: Array String |+| String |+| Undefined,
-    handler :: String |+| String |+| String |+| Undefined
+    handler :: EventHandler |+| Undefined
 }
 
 type AlertInputAttributes = {
+type AlertTextareaAttributes = {
     accept :: String |+| Undefined,
     allowdirs :: Boolean |+| Undefined,
     alt :: String |+| Undefined,
@@ -76,9 +77,6 @@ type AlertInputAttributes = {
     webkitdirectory :: Boolean |+| Undefined,
     webkitEntries :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| Undefined,
     width :: Number |+| String |+| Undefined
-}
-
-type AlertTextareaAttributes = {
     autoFocus :: Boolean |+| Undefined,
     autofocus :: Boolean |+| String |+| Undefined,
     cols :: Number |+| Undefined,
@@ -98,6 +96,8 @@ type AlertTextareaAttributes = {
     wrap :: String |+| Undefined
 }
 
+}
+
 type AlertInput = {
     type :: String |+| String |+| String |+| String |+| Undefined,
     name :: String |+| Undefined,
@@ -107,7 +107,7 @@ type AlertInput = {
     checked :: Boolean |+| Undefined,
     disabled :: Boolean |+| Undefined,
     id :: String |+| Undefined,
-    handler :: String |+| Undefined,
+    handler :: EventHandler |+| Undefined,
     min :: String |+| Number |+| Undefined,
     max :: String |+| Number |+| Undefined,
     cssClass :: Array String |+| String |+| Undefined,
@@ -115,6 +115,12 @@ type AlertInput = {
 }
 
 type IonAlertProps = {
+
+foreign import _ionAlert :: ReactComponent IonAlertProps
+
+ionAlert :: forall r. Coercible r IonAlertProps => r -> JSX
+ionAlert = element _ionAlert <<< coerce
+
     header :: String |+| Undefined,
     subHeader :: String |+| Undefined,
     message :: String |+| String |+| Undefined,
@@ -130,16 +136,10 @@ type IonAlertProps = {
     enterAnimation :: String |+| Undefined,
     leaveAnimation :: String |+| Undefined,
     isOpen :: Boolean |+| Undefined,
-    onDidDismiss :: String |+| Undefined,
-    onDidPresent :: String |+| Undefined,
-    onWillDismiss :: String |+| Undefined,
-    onWillPresent :: String |+| Undefined,
+    onDidDismiss :: EventHandler |+| Undefined,
+    onDidPresent :: EventHandler |+| Undefined,
+    onWillDismiss :: EventHandler |+| Undefined,
+    onWillPresent :: EventHandler |+| Undefined,
     key :: String |+| Number
 }
-
-
-foreign import _ionAlert :: ReactComponent IonAlertProps
-
-ionAlert :: forall r. Coercible r IonAlertProps => r -> JSX
-ionAlert = element _ionAlert <<< coerce
 
