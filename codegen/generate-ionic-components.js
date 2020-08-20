@@ -4,13 +4,14 @@ const Parser = require('ts-types-parser');
 const parser = new Parser;
 
 var generateIonicTypes = async (isJs) => {
-    await generateAlertComponent("ionAlert", isJs);
+    await generateAlertComponent("Alert", isJs);
+    await generateAlertComponent("ActionSheet", isJs);
 };
 
 
 const generateAlertComponent = async (componentName, isJs) => {
-    var lowerName = componentName;
-    var upperName = upperFist(componentName);
+    var lowerName = `ion${componentName}`;
+    var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
     await printHeader(isJs, fileWriter);
     if(isJs){
@@ -18,8 +19,11 @@ const generateAlertComponent = async (componentName, isJs) => {
         return;
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
-    printRowType(`${upperName}Props`, flatten([], [await parseInterfaceOptions(lines, fileWriter), 
-        await parseControllerProps(lines, fileWriter), parseRefAttributes(lines)]), false, fileWriter);
+    await printRowType(`${upperName}Props`, flatten([], [
+        await parseInterfaceOptions(componentName, lines, fileWriter), 
+        await parseControllerProps(lines, fileWriter), 
+        await parseOverlayProps(lines, fileWriter),
+        parseRefAttributes(lines)]), false, fileWriter);
     await generateComponentFunc(lowerName, fileWriter);
 };
 
@@ -34,6 +38,14 @@ const parseControllerProps = async (lines, writeOutput) => {
     if(lines.some(l => l.includes("import(\"./createControllerComponent\").ReactControllerProps"))){
         var data = await withFileDo("./node_modules/@ionic/react/dist/types/components/createControllerComponent.d.ts");    
         return await getRowTypeElements("ReactControllerProps", getLineData(data), 1, writeOutput);
+    }
+    return [];
+};
+
+const parseOverlayProps = async (lines, writeOutput) => {
+    if(lines.some(l => l.includes("import(\"./createOverlayComponent\").ReactOverlayProps"))){
+        var data = await withFileDo("./node_modules/@ionic/react/dist/types/components/createOverlayComponent.d.ts");    
+        return await getRowTypeElements("ReactOverlayProps", getLineData(data), 1, writeOutput);
     }
     return [];
 };
@@ -54,18 +66,41 @@ ${name} = element _${name} <<< coerce
 `);    
 };
 
-const parseInterfaceOptions = async (lines, writeOutput) => {
-    var r = await Promise.all(lines.map(async line => {
-        var optionsMatch = /import { (\w+)Options } from '@ionic\/core';/.exec(line);
-        if(optionsMatch){
-            const name = optionsMatch[1];
-            const optName = `${name}Options`;
-            var data = await withFileDo(`./node_modules/@ionic/core/dist/types/components/${name}/${name}-interface.d.ts`);
-            return await getRowTypeElements(optName, getLineData(data), 1, writeOutput);
+const parseInterfaceOptions = async (componentName, lines, writeOutput) => {
+    var componentPathName = getPathName(componentName);
+    var r = await sequence(lines.map(async line => {
+        var s = `import {((\\w|\\s|,)*)${componentName}Options( as (\\w)+OptionsCore)? } from '@ionic\\/core';`;
+        if(line.match(s)){
+            var sublines = getLineData(await withFileDo(
+                `./node_modules/@ionic/core/dist/types/components/${componentPathName}/${componentPathName}-interface.d.ts`));
+            return await getRowTypeElements(`${componentName}Options`, sublines, 1, writeOutput);
         }
         return [];
     }));
     return flatten([], r);
+};
+
+const getPathName = (name) => {
+    var indizes = findUppercaseLetters(name);
+    return indizes.reduce((a, i) => i == 0 ? lowerFist(a) : `${a.substring(0,i)}-${lowerFist(a.substring(i))}`, name);
+};
+
+const findUppercaseLetters = (name) => {
+    const res = [];
+    for (let index = 0; index < name.length; index++) {
+        const c = name[index];
+        if(c == c.toUpperCase()) res.push(index);
+    }
+    return res;
+};
+
+const sequence = async (array) => {
+    var r = [];
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        r.push(await element);
+    }
+    return r;
 };
 
 const flatten = (initialVal, arr) => {
@@ -115,7 +150,7 @@ const getRowTypeElements = async (type, lines, closingBracesCount, writeOutput) 
 
 const getRowTypesFromRegion = async (type, lines, closingBracesCount, writeOutput) => {
     var region = getStatements(flatten("", limitToRegion(lines, type, closingBracesCount)));
-    return await Promise.all(region.filter(
+    return await sequence(region.filter(
         l => !isEmptyOrSpaces(l)).filter(
             e => !isComment(e)).filter(e => e.includes(":")).map(
                 e => parseGenereicRowTypeElement(e)).map(generateRowTypeElement(lines, writeOutput)));
@@ -162,7 +197,7 @@ const generateArrayType = async (typeScriptType, lines, writeOutput) => {
 };
 
 const generateSumType = async (typeScriptType, lines, writeOutput) => {
-    const res = await Promise.all(distinct(typeScriptType.split("|").map(
+    const res = await sequence(distinct(typeScriptType.split("|").map(
         e => e.trim()).filter(e => e != "inherit").map(async e => await generateType(e, lines, writeOutput))));
     return res.join(" |+| ");
 };
@@ -233,6 +268,10 @@ const genJavascriptCode = async (name, writeOutput) => {
 
 function upperFist(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function lowerFist(string) {
+    return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
 generateIonicTypes(process.argv[2] == "js");
