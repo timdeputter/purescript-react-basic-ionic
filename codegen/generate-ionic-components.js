@@ -24,11 +24,11 @@ const generateComponent = async (componentName, isJs) => {
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
     var subTypes = [];
-    var pickers = getPickers(lines, componentName);
     await printRowType(`${upperName}Props`, flatten([], [
-        await parseInterfaceOptions(componentName, lines, subTypes, pickers), 
+        await parseInterfaceOptions(componentName, lines, subTypes), 
         await parseBasicReactProps(lines, subTypes),
         await parseComponentProps(componentName, lines, subTypes),
+        await parseHtmlAttributes(lines, subTypes), 
         await parseReactProps('Controller', lines, subTypes), 
         await parseReactProps('Overlay', lines, subTypes),
         parseRefAttributes(lines)]), fileWriter);
@@ -39,8 +39,8 @@ const generateComponent = async (componentName, isJs) => {
     await generateComponentFunc(lowerName, fileWriter);
 };
 
-const getPickers = (lines, type) => {
-    var s = lines.filter(l => l.includes(`Pick<${type}Options`))[0];
+const getPickers = (lines, pickIndicator) => {
+    var s = lines.filter(l => l.includes(pickIndicator))[0];
     var e = [];
     if(s){
         extractPickers(e, s)
@@ -49,7 +49,7 @@ const getPickers = (lines, type) => {
 };
 
 const extractPickers = (pickers, s) => {
-    var match = /("\w+"|'\w+')( \||>)/g.exec(s);
+    var match = /("(\w|-)+"|'(\w|-)+')( \||>)/g.exec(s);
     if(match) {
         pickers.push(match[1].slice(1).slice(0,-1));
         extractPickers(pickers, s.substring(match.index + match[0].length))
@@ -71,6 +71,15 @@ const parseBasicReactProps = async (lines, writeOutput) => {
     if(lines.some(l => l.includes("import { IonicReactProps } from './IonicReactProps';"))){
         var data = await withFileDo(`./node_modules/@ionic/react/dist/types/components/IonicReactProps.d.ts`);    
         return await getRowTypeElements("IonicReactProps", getLineData(data), [], writeOutput);
+    }
+    return [];
+};
+
+const parseHtmlAttributes = async (lines, writeOutput) => {
+    if(lines.some(l => l.includes("Pick<React.HTMLAttributes"))){
+        var pickers = getPickers(lines, "Pick<React.HTMLAttributes");
+        var data = await withFileDo(`./node_modules/@types/react/index.d.ts`);    
+        return await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, writeOutput);
     }
     return [];
 };
@@ -99,7 +108,8 @@ ${name} = element _${name} <<< coerce
 `);    
 };
 
-const parseInterfaceOptions = async (componentName, lines, writeOutput, pickers) => {
+const parseInterfaceOptions = async (componentName, lines, writeOutput) => {
+    var pickers = getPickers(lines, `Pick<${componentName}Options`);
     var componentPathName = getPathName(componentName);
     var r = await sequence(lines.map(async line => {
         var s = `import {((\\w|\\s|,)*)${componentName}Options( as (\\w)+OptionsCore)? } from '@ionic\\/core';`;
@@ -139,21 +149,25 @@ const printRowType = async (type, rowTypeElements, writeOutput) => {
     await writeOutput(`type ${type} = {\n${rowTypeElements.join(",\n")}\n}\n`);
 };
 
-const getRowTypeElements = async (type, lines, pickers, writeOutput) => {
+const getRowTypeElements = async (type, lines, pickers, writeOutput, depths = 1) => {
     var baseName = getBaseTypeName(lines, type);
-    if(baseName != undefined) {
+    if(type == 'HTMLAttributes'){
+        var aria = await getRowTypeElements("AriaAttributes", lines, pickers, writeOutput);
+        var doms = await getRowTypeElements("DOMAttributes", lines, pickers, writeOutput, 2);
+        return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(doms).concat(aria);
+    } else if(baseName != undefined) {
         var data = await withFileDo("./node_modules/@ionic/core/dist/types/stencil-public-runtime.d.ts");
-        return (await getRowTypesFromRegion(type, lines, pickers, writeOutput)).concat(
+        return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(
             await getRowTypeElements(baseName, getLineData(data), pickers, writeOutput));
     }
-    return await getRowTypesFromRegion(type, lines, pickers, writeOutput);
+    return await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths);
 };
 
-const getRowTypesFromRegion = async (type, lines, pickers, writeOutput) => {
-    var region = limitToRegion(lines, type);
+const getRowTypesFromRegion = async (type, lines, pickers, writeOutput, depths) => {
+    var region = limitToRegion(lines, type, depths).filter(l => !isEmptyOrSpaces(l)).filter(
+        e => !isComment(e));
     var statements = getStatements(flatten("", region));
-    return await sequence(statements.filter(l => !isEmptyOrSpaces(l)).filter(
-        e => !isComment(e)).filter(e => e.includes(":")).map(e => parseGenereicRowTypeElement(e)).filter(
+    return await sequence(statements.filter(e => e.includes(":")).map(e => parseGenereicRowTypeElement(e)).filter(
             e => isPicked(e, pickers)).map(generateRowTypeElement(lines, pickers, writeOutput)));
 };
 
@@ -210,7 +224,7 @@ const parseGenereicRowTypeElement = (codeline) =>  {
     var elements = codeline.split("?:");
     if(elements.length == 1) elements = codeline.split(":");
     var s = elements.map(s => s.trim());
-    return {name: s[0], type: s[1].replace(';','') };
+    return {name: s[0].replace(/'/g, ""), type: s[1].replace(';','') };
 }
 
 const isComment = (codeLine) => {
@@ -221,10 +235,10 @@ const removeEndOfLineComment = (codeline) => {
     return codeline.split("//")[0];
 };
 
-const limitToRegion = (lines, marker) => {
+const limitToRegion = (lines, marker, depths) => {
     lines = lines.slice(lines.findIndex(l => l.includes(`interface ${marker}`))+1);
     if(lines.length > 0 && lines[0].includes('}')) return [];
-    return lines.slice(0, findIndexOfNthClosingBrace(lines, 1, 0));
+    return lines.slice(0, findIndexOfNthClosingBrace(lines, depths, 0));
 };
 
 const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
