@@ -12,11 +12,11 @@ import Untagged.Union (type (|+|))
     
 type IonToastProps = {
     header :: String |+| Undefined,
-    message :: String |+| String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    message :: String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     duration :: Number |+| Undefined,
     buttons :: Array (ToastButton |+| String) |+| Undefined,
-    position :: String |+| String |+| String |+| Undefined,
+    position :: String |+| Undefined,
     translucent :: Boolean |+| Undefined,
     animated :: Boolean |+| Undefined,
     color :: String |+| Undefined,
@@ -36,9 +36,9 @@ type IonToastProps = {
 type ToastButton = {
     text :: String |+| Undefined,
     icon :: String |+| Undefined,
-    side :: String |+| String |+| Undefined,
-    role :: String |+| String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    side :: String |+| Undefined,
+    role :: String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     handler :: EventHandler |+| Undefined
 }
 

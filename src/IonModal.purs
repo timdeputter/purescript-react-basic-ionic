@@ -14,7 +14,7 @@ type IonModalProps = {
     presentingElement :: String |+| Undefined,
     showBackdrop :: Boolean |+| Undefined,
     backdropDismiss :: Boolean |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     delegate :: String |+| Undefined,
     animated :: Boolean |+| Undefined,
     swipeToClose :: Boolean |+| Undefined,

@@ -13,7 +13,7 @@ import Untagged.Union (type (|+|))
 type IonPickerProps = {
     columns :: Array PickerColumn |+| Undefined,
     buttons :: Array PickerButton |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     showBackdrop :: Boolean |+| Undefined,
     backdropDismiss :: Boolean |+| Undefined,
     animated :: Boolean |+| Undefined,
@@ -42,7 +42,7 @@ type PickerColumnOption = {
 type PickerButton = {
     text :: String |+| Undefined,
     role :: String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     handler :: EventHandler |+| Undefined
 }
 
@@ -54,7 +54,7 @@ type PickerColumn = {
     prefix :: String |+| Undefined,
     suffix :: String |+| Undefined,
     options :: Array PickerColumnOption |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     columnWidth :: String |+| Undefined,
     prefixWidth :: String |+| Undefined,
     suffixWidth :: String |+| Undefined,

@@ -13,7 +13,7 @@ import Untagged.Union (type (|+|))
 type IonActionSheetProps = {
     header :: String |+| Undefined,
     subHeader :: String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     buttons :: Array (ActionSheetButton |+| String) |+| Undefined,
     backdropDismiss :: Boolean |+| Undefined,
     translucent :: Boolean |+| Undefined,
@@ -34,9 +34,9 @@ type IonActionSheetProps = {
 
 type ActionSheetButton = {
     text :: String |+| Undefined,
-    role :: String |+| String |+| String |+| String |+| Undefined,
+    role :: String |+| Undefined,
     icon :: String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     handler :: EventHandler |+| Undefined
 }
 

@@ -11,9 +11,9 @@ import Untagged.Union (type (|+|))
     
     
 type IonLoadingProps = {
-    spinner :: String |+| String |+| Undefined,
-    message :: String |+| String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    spinner :: String |+| Undefined,
+    message :: String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     showBackdrop :: Boolean |+| Undefined,
     duration :: Number |+| Undefined,
     translucent :: Boolean |+| Undefined,

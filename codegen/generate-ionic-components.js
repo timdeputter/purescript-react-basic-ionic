@@ -190,7 +190,9 @@ const fixName = (name) => {
 
 const generateType = async (typeScriptType, lines, pickers, writeOutput) => {
     if(typeScriptType.includes("=>")) return "EventHandler";
-    if(typeScriptType.endsWith("[]")) return await generateArrayType(typeScriptType, lines, pickers, writeOutput);
+    if((!typeScriptType.includes("|") && typeScriptType.endsWith("[]"))
+    || (typeScriptType.startsWith("(")&& typeScriptType.endsWith("[]")) ) 
+        return await generateArrayType(typeScriptType, lines, pickers, writeOutput);
     if(lines.some(l => l.includes(`export interface ${typeScriptType}`))) {
         writeOutput.push({type: typeScriptType, rows: await getRowTypeElements(typeScriptType, lines, pickers, writeOutput)});
         return typeScriptType;
@@ -217,9 +219,9 @@ const generateArrayType = async (typeScriptType, lines, pickers, writeOutput) =>
 };
 
 const generateSumType = async (typeScriptType, lines, pickers, writeOutput) => {
-    const res = await sequence(distinct(typeScriptType.split("|").map(
-        e => e.trim()).filter(e => e != "inherit").map(async e => await generateType(e, lines, pickers, writeOutput))));
-    return res.join(" |+| ");
+    const res = await sequence(typeScriptType.split("|").map(
+        e => e.trim()).filter(e => e != "inherit").map(async e => await generateType(e, lines, pickers, writeOutput)));
+    return distinct(res).join(" |+| ");
 };
 
 const parseGenereicRowTypeElement = (codeline) =>  {

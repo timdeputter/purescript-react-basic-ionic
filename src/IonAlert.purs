@@ -13,8 +13,8 @@ import Untagged.Union (type (|+|))
 type IonAlertProps = {
     header :: String |+| Undefined,
     subHeader :: String |+| Undefined,
-    message :: String |+| String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    message :: String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     inputs :: Array AlertInput |+| Undefined,
     buttons :: Array (AlertButton |+| String) |+| Undefined,
     backdropDismiss :: Boolean |+| Undefined,
@@ -36,7 +36,7 @@ type IonAlertProps = {
 type AlertButton = {
     text :: String |+| Undefined,
     role :: String |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     handler :: EventHandler |+| Undefined
 }
 
@@ -122,7 +122,7 @@ type AlertInputAttributes = {
 }
 
 type AlertInput = {
-    type :: String |+| String |+| String |+| String |+| Undefined,
+    type :: String |+| Undefined,
     name :: String |+| Undefined,
     placeholder :: String |+| Undefined,
     value :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| Undefined,
@@ -133,7 +133,7 @@ type AlertInput = {
     handler :: EventHandler |+| Undefined,
     min :: String |+| Number |+| Undefined,
     max :: String |+| Number |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     attributes :: AlertInputAttributes |+| AlertTextareaAttributes |+| Undefined
 }
 

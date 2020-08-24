@@ -14,7 +14,7 @@ type IonPopoverProps = {
     showBackdrop :: Boolean |+| Undefined,
     backdropDismiss :: Boolean |+| Undefined,
     translucent :: Boolean |+| Undefined,
-    cssClass :: Array String |+| String |+| Undefined,
+    cssClass :: String |+| Array String |+| Undefined,
     event :: String |+| Undefined,
     delegate :: String |+| Undefined,
     animated :: Boolean |+| Undefined,
