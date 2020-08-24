@@ -26,8 +26,8 @@ const generateComponent = async (componentName, isJs) => {
     var pickers = getPickers(lines, componentName);
     await printRowType(`${upperName}Props`, flatten([], [
         await parseInterfaceOptions(componentName, lines, subTypes, pickers), 
-        await parseReactProps('Controller', lines, subTypes, pickers), 
-        await parseReactProps('Overlay', lines, subTypes, pickers),
+        await parseReactProps('Controller', lines, subTypes), 
+        await parseReactProps('Overlay', lines, subTypes),
         parseRefAttributes(lines)]), fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
@@ -60,10 +60,10 @@ const getFileWriter = async (componentName, isJs) => {
     return async data => await fs.appendFileSync(path, data + "\n");
 };
 
-const parseReactProps = async (name, lines, writeOutput, pickers) => {
+const parseReactProps = async (name, lines, writeOutput) => {
     if(lines.some(l => l.includes(`import(\"./create${name}Component\").React${name}Props`))){
         var data = await withFileDo(`./node_modules/@ionic/react/dist/types/components/create${name}Component.d.ts`);    
-        return await getRowTypeElements(`React${name}Props`, getLineData(data), pickers, writeOutput);
+        return await getRowTypeElements(`React${name}Props`, getLineData(data), [], writeOutput);
     }
     return [];
 };

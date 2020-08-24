@@ -23,6 +23,12 @@ type IonModalProps = {
     id :: String |+| Undefined,
     enterAnimation :: String |+| Undefined,
     leaveAnimation :: String |+| Undefined,
+    children :: Array JSX |+| Undefined,
+    isOpen :: Boolean |+| Undefined,
+    onDidDismiss :: EventHandler |+| Undefined,
+    onDidPresent :: EventHandler |+| Undefined,
+    onWillDismiss :: EventHandler |+| Undefined,
+    onWillPresent :: EventHandler |+| Undefined,
     key :: String |+| Number
 }
 
