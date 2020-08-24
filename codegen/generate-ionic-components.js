@@ -10,6 +10,8 @@ var generateIonicTypes = async (isJs) => {
     await generateComponent("Picker", isJs);
     await generateComponent("Popover", isJs);
     await generateComponent("Icon", isJs);
+    await generateComponent("Page", isJs);
+    await generateComponent("Toast", isJs);
 };
 
 
