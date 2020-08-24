@@ -3,12 +3,13 @@ const util = require('util');
 
 
 var generateIonicTypes = async (isJs) => {
-    // await generateComponent("Alert", isJs);
-    // await generateComponent("ActionSheet", isJs);
-    // await generateComponent("Loading", isJs);
+    await generateComponent("Alert", isJs);
+    await generateComponent("ActionSheet", isJs);
+    await generateComponent("Loading", isJs);
     await generateComponent("Modal", isJs);
-    // await generateComponent("Picker", isJs);
-    // await generateComponent("Popover", isJs);
+    await generateComponent("Picker", isJs);
+    await generateComponent("Popover", isJs);
+    await generateComponent("Icon", isJs);
 };
 
 
@@ -26,6 +27,8 @@ const generateComponent = async (componentName, isJs) => {
     var pickers = getPickers(lines, componentName);
     await printRowType(`${upperName}Props`, flatten([], [
         await parseInterfaceOptions(componentName, lines, subTypes, pickers), 
+        await parseBasicReactProps(lines, subTypes),
+        await parseComponentProps(componentName, lines, subTypes),
         await parseReactProps('Controller', lines, subTypes), 
         await parseReactProps('Overlay', lines, subTypes),
         parseRefAttributes(lines)]), fileWriter);
@@ -58,6 +61,18 @@ const getFileWriter = async (componentName, isJs) => {
     const path = `./src/${componentName}${extension}`;
     await fs.writeFileSync(path,"");
     return async data => await fs.appendFileSync(path, data + "\n");
+};
+
+const parseComponentProps = async (componentName, lines, writeOutput) => {
+    return await getRowTypeElements(`Ion${componentName}Props`, lines, [], writeOutput);
+};
+
+const parseBasicReactProps = async (lines, writeOutput) => {
+    if(lines.some(l => l.includes("import { IonicReactProps } from './IonicReactProps';"))){
+        var data = await withFileDo(`./node_modules/@ionic/react/dist/types/components/IonicReactProps.d.ts`);    
+        return await getRowTypeElements("IonicReactProps", getLineData(data), [], writeOutput);
+    }
+    return [];
 };
 
 const parseReactProps = async (name, lines, writeOutput) => {
