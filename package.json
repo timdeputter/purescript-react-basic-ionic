@@ -15,8 +15,6 @@
   },
   "scripts": {
     "build": "spago build",
-    "serve": "parcel dev/index.html --out-dir dev-dist --open",
-    "build-prod": "rm -rf dist && spago bundle-app --to prod/index.js && parcel build prod/index.html",
-    "codegen": "node codegen/generate-ionic-components.js && node codegen/generate-ionic-components.js js"
+    "codegen": "node codegen/generate-ionic-components.js && node codegen/generate-ionic-components.js js && spago build"
   }
 }
