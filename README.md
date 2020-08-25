@@ -1,5 +1,4 @@
-# purescript-react-basic-ionic
-[![GitHub](https://img.shields.io/github/license/timdeputter/purescript-react-basic-ionic)](https://github.com/timdeputter/purescript-react-basic-ionic/blob/master/LICENSE)
+# purescript-react-basic-ionic [![GitHub](https://img.shields.io/github/license/timdeputter/purescript-react-basic-ionic)](https://github.com/timdeputter/purescript-react-basic-ionic/blob/master/LICENSE)
 Bindings for react basic to the ionic framework (https://ionicframework.com/react).
 
 
