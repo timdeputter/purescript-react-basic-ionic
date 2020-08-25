@@ -12,6 +12,46 @@ var generateIonicTypes = async (isJs) => {
     await generateComponent("Icon", isJs);
     await generateComponent("Page", isJs);
     await generateComponent("Toast", isJs);
+    await generateProxyComponents(isJs);
+};
+
+
+const generateProxyComponents = async (isJs) => {
+    var statements = getStatements(await withFileDo(`./node_modules/@ionic/react/dist/types/components/proxies.d.ts`));
+    for (let index = 0; index < statements.length; index++) {
+        const s = statements[index];
+        var componentName = getComponentName(s);
+        if(componentName){
+            await createProxyComponent(componentName, s, isJs);
+        }        
+    }
+};
+
+const createProxyComponent = async (componentName, s, isJs) => {
+    const lowerName = lowerFist(componentName);
+    var fileWriter = await getFileWriter(componentName, isJs);
+    await printHeader(isJs, componentName, fileWriter);
+    if(isJs){
+        await genJavascriptCode(lowerName, fileWriter);
+        return;
+    }
+    var pickers = getPickers([s], `Pick<import("react").HTMLAttributes<`);
+    var data = await withFileDo(`./node_modules/@types/react/index.d.ts`);    
+    var subTypes = [];
+    await printRowType(`${componentName}Props`, 
+        await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, subTypes),
+        fileWriter);
+    for (let index = 0; index < subTypes.length; index++) {
+        const element = subTypes[index];
+        await printRowType(element.type, element.rows, fileWriter);
+    }
+    await generateComponentFunc(lowerName, fileWriter);
+};
+
+const getComponentName = (statement) => {
+    var match = (/export declare const (\w+):/g.exec(statement));
+    if(match) return match[1];
+    return null;
 };
 
 
