@@ -194,8 +194,8 @@ const printRowType = async (type, rowTypeElements, writeOutput) => {
 const getRowTypeElements = async (type, lines, pickers, writeOutput, depths = 1) => {
     var baseName = getBaseTypeName(lines, type);
     if(type == 'HTMLAttributes'){
-        var doms = await getRowTypeElements("DOMAttributes", lines, pickers, writeOutput, 2);
-        return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(doms).concat(aria);
+        return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(
+            await getRowTypeElements("DOMAttributes", lines, pickers, writeOutput, 2));
     } else if(baseName != undefined) {
         var data = await withFileDo("./node_modules/@ionic/core/dist/types/stencil-public-runtime.d.ts");
         return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(
