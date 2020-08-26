@@ -194,7 +194,6 @@ const printRowType = async (type, rowTypeElements, writeOutput) => {
 const getRowTypeElements = async (type, lines, pickers, writeOutput, depths = 1) => {
     var baseName = getBaseTypeName(lines, type);
     if(type == 'HTMLAttributes'){
-        var aria = await getRowTypeElements("AriaAttributes", lines, pickers, writeOutput);
         var doms = await getRowTypeElements("DOMAttributes", lines, pickers, writeOutput, 2);
         return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(doms).concat(aria);
     } else if(baseName != undefined) {
