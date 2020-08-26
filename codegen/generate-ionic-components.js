@@ -220,11 +220,7 @@ const isPicked = (e, pickers) => {
 
 
 const generateRowTypeElement = (lines, pickers, writeOutput) => async (rowEl) => {
-    return `    ${fixName(rowEl.name)} :: ${await generateType(rowEl.type, lines, pickers, writeOutput)} |+| Undefined`;
-};
-
-const fixName = (name) => {
-    return name.replace(/-/g,"").replace(/\'/g,"");
+    return `    ${rowEl.name} :: ${await generateType(rowEl.type, lines, pickers, writeOutput)} |+| Undefined`;
 };
 
 const generateType = async (typeScriptType, lines, pickers, writeOutput) => {
