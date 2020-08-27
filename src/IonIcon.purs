@@ -1,12 +1,11 @@
 
 module Ionic.Icon where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -230,12 +229,63 @@ type IonIconProps = {
     onAnimationIterationCapture :: EventHandler |+| Undefined,
     onTransitionEnd :: EventHandler |+| Undefined,
     onTransitionEndCapture :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    ariaactivedescendant :: String |+| Undefined,
+    ariaatomic :: Boolean |+| String |+| Undefined,
+    ariaautocomplete :: String |+| Undefined,
+    ariabusy :: Boolean |+| String |+| Undefined,
+    ariachecked :: Boolean |+| String |+| Undefined,
+    ariacolcount :: Number |+| Undefined,
+    ariacolindex :: Number |+| Undefined,
+    ariacolspan :: Number |+| Undefined,
+    ariacontrols :: String |+| Undefined,
+    ariacurrent :: Boolean |+| String |+| Undefined,
+    ariadescribedby :: String |+| Undefined,
+    ariadetails :: String |+| Undefined,
+    ariadisabled :: Boolean |+| String |+| Undefined,
+    ariadropeffect :: String |+| Undefined,
+    ariaerrormessage :: String |+| Undefined,
+    ariaexpanded :: Boolean |+| String |+| Undefined,
+    ariaflowto :: String |+| Undefined,
+    ariagrabbed :: Boolean |+| String |+| Undefined,
+    ariahaspopup :: Boolean |+| String |+| Undefined,
+    ariahidden :: Boolean |+| String |+| Undefined,
+    ariainvalid :: Boolean |+| String |+| Undefined,
+    ariakeyshortcuts :: String |+| Undefined,
+    arialabel :: String |+| Undefined,
+    arialabelledby :: String |+| Undefined,
+    arialevel :: Number |+| Undefined,
+    arialive :: String |+| Undefined,
+    ariamodal :: Boolean |+| String |+| Undefined,
+    ariamultiline :: Boolean |+| String |+| Undefined,
+    ariamultiselectable :: Boolean |+| String |+| Undefined,
+    ariaorientation :: String |+| Undefined,
+    ariaowns :: String |+| Undefined,
+    ariaplaceholder :: String |+| Undefined,
+    ariaposinset :: Number |+| Undefined,
+    ariapressed :: Boolean |+| String |+| Undefined,
+    ariareadonly :: Boolean |+| String |+| Undefined,
+    ariarelevant :: String |+| Undefined,
+    ariarequired :: Boolean |+| String |+| Undefined,
+    ariaroledescription :: String |+| Undefined,
+    ariarowcount :: Number |+| Undefined,
+    ariarowindex :: Number |+| Undefined,
+    ariarowspan :: Number |+| Undefined,
+    ariaselected :: Boolean |+| String |+| Undefined,
+    ariasetsize :: Number |+| Undefined,
+    ariasort :: String |+| Undefined,
+    ariavaluemax :: Number |+| Undefined,
+    ariavaluemin :: Number |+| Undefined,
+    ariavaluenow :: Number |+| Undefined,
+    ariavaluetext :: String |+| Undefined,
+    key :: String |+| Number |+| Undefined
 }
 
 
 foreign import _ionIcon :: ReactComponent IonIconProps
 
 ionIcon :: forall r. Coercible r IonIconProps => r -> JSX
-ionIcon = element _ionIcon <<< coerce
+ionIcon = ionElement _ionIcon
+
+ionIcon_ :: Array JSX -> JSX
+ionIcon_ children = ionIcon {children}
 

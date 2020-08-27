@@ -1,6 +1,6 @@
 
-    "use strict";
-    var Ionic = require("@ionic/react");
+"use strict";
+var Ionic = require("@ionic/react");
     
 exports._ionNav = Ionic.IonNav;  
 

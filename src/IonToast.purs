@@ -1,12 +1,11 @@
 
 module Ionic.Toast where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -30,7 +29,7 @@ type IonToastProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 type ToastButton = {
@@ -46,5 +45,5 @@ type ToastButton = {
 foreign import _ionToast :: ReactComponent IonToastProps
 
 ionToast :: forall r. Coercible r IonToastProps => r -> JSX
-ionToast = element _ionToast <<< coerce
+ionToast = ionElement _ionToast
 

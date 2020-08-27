@@ -1,12 +1,11 @@
 
 module Ionic.Picker where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -27,7 +26,7 @@ type IonPickerProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 type PickerColumnOption = {
@@ -66,5 +65,5 @@ type PickerColumn = {
 foreign import _ionPicker :: ReactComponent IonPickerProps
 
 ionPicker :: forall r. Coercible r IonPickerProps => r -> JSX
-ionPicker = element _ionPicker <<< coerce
+ionPicker = ionElement _ionPicker
 

@@ -1,6 +1,6 @@
 
-    "use strict";
-    var Ionic = require("@ionic/react");
+"use strict";
+// var Ionic = require("@ionic/react");
     
-exports._ionApp = Ionic.IonApp;  
+exports._ionApp = "Ionic.IonApp";  
 

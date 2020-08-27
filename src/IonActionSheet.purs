@@ -1,12 +1,11 @@
 
 module Ionic.ActionSheet where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -29,7 +28,7 @@ type IonActionSheetProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 type ActionSheetButton = {
@@ -44,5 +43,8 @@ type ActionSheetButton = {
 foreign import _ionActionSheet :: ReactComponent IonActionSheetProps
 
 ionActionSheet :: forall r. Coercible r IonActionSheetProps => r -> JSX
-ionActionSheet = element _ionActionSheet <<< coerce
+ionActionSheet = ionElement _ionActionSheet
+
+ionActionSheet_ :: Array JSX -> JSX
+ionActionSheet_ children = ionActionSheet {children}
 

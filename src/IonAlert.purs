@@ -1,12 +1,11 @@
 
 module Ionic.Alert where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -30,7 +29,7 @@ type IonAlertProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 type AlertButton = {
@@ -141,5 +140,5 @@ type AlertInput = {
 foreign import _ionAlert :: ReactComponent IonAlertProps
 
 ionAlert :: forall r. Coercible r IonAlertProps => r -> JSX
-ionAlert = element _ionAlert <<< coerce
+ionAlert = ionElement _ionAlert
 

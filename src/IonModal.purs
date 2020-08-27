@@ -1,12 +1,11 @@
 
 module Ionic.Modal where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -29,12 +28,15 @@ type IonModalProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 
 foreign import _ionModal :: ReactComponent IonModalProps
 
 ionModal :: forall r. Coercible r IonModalProps => r -> JSX
-ionModal = element _ionModal <<< coerce
+ionModal = ionElement _ionModal
+
+ionModal_ :: Array JSX -> JSX
+ionModal_ children = ionModal {children}
 

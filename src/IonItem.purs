@@ -1,12 +1,11 @@
 
 module Ionic.IonItem where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -216,7 +215,55 @@ type IonItemProps = {
     onAnimationIteration :: EventHandler |+| Undefined,
     onAnimationIterationCapture :: EventHandler |+| Undefined,
     onTransitionEnd :: EventHandler |+| Undefined,
-    onTransitionEndCapture :: EventHandler |+| Undefined
+    onTransitionEndCapture :: EventHandler |+| Undefined,
+    ariaactivedescendant :: String |+| Undefined,
+    ariaatomic :: Boolean |+| String |+| Undefined,
+    ariaautocomplete :: String |+| Undefined,
+    ariabusy :: Boolean |+| String |+| Undefined,
+    ariachecked :: Boolean |+| String |+| Undefined,
+    ariacolcount :: Number |+| Undefined,
+    ariacolindex :: Number |+| Undefined,
+    ariacolspan :: Number |+| Undefined,
+    ariacontrols :: String |+| Undefined,
+    ariacurrent :: Boolean |+| String |+| Undefined,
+    ariadescribedby :: String |+| Undefined,
+    ariadetails :: String |+| Undefined,
+    ariadisabled :: Boolean |+| String |+| Undefined,
+    ariadropeffect :: String |+| Undefined,
+    ariaerrormessage :: String |+| Undefined,
+    ariaexpanded :: Boolean |+| String |+| Undefined,
+    ariaflowto :: String |+| Undefined,
+    ariagrabbed :: Boolean |+| String |+| Undefined,
+    ariahaspopup :: Boolean |+| String |+| Undefined,
+    ariahidden :: Boolean |+| String |+| Undefined,
+    ariainvalid :: Boolean |+| String |+| Undefined,
+    ariakeyshortcuts :: String |+| Undefined,
+    arialabel :: String |+| Undefined,
+    arialabelledby :: String |+| Undefined,
+    arialevel :: Number |+| Undefined,
+    arialive :: String |+| Undefined,
+    ariamodal :: Boolean |+| String |+| Undefined,
+    ariamultiline :: Boolean |+| String |+| Undefined,
+    ariamultiselectable :: Boolean |+| String |+| Undefined,
+    ariaorientation :: String |+| Undefined,
+    ariaowns :: String |+| Undefined,
+    ariaplaceholder :: String |+| Undefined,
+    ariaposinset :: Number |+| Undefined,
+    ariapressed :: Boolean |+| String |+| Undefined,
+    ariareadonly :: Boolean |+| String |+| Undefined,
+    ariarelevant :: String |+| Undefined,
+    ariarequired :: Boolean |+| String |+| Undefined,
+    ariaroledescription :: String |+| Undefined,
+    ariarowcount :: Number |+| Undefined,
+    ariarowindex :: Number |+| Undefined,
+    ariarowspan :: Number |+| Undefined,
+    ariaselected :: Boolean |+| String |+| Undefined,
+    ariasetsize :: Number |+| Undefined,
+    ariasort :: String |+| Undefined,
+    ariavaluemax :: Number |+| Undefined,
+    ariavaluemin :: Number |+| Undefined,
+    ariavaluenow :: Number |+| Undefined,
+    ariavaluetext :: String |+| Undefined
 }
 
 type CSSProperties = {
@@ -227,5 +274,8 @@ type CSSProperties = {
 foreign import _ionItem :: ReactComponent IonItemProps
 
 ionItem :: forall r. Coercible r IonItemProps => r -> JSX
-ionItem = element _ionItem <<< coerce
+ionItem = ionElement _ionItem
+
+ionItem_ :: Array JSX -> JSX
+ionItem_ children = ionItem {children}
 

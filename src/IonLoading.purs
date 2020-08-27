@@ -1,12 +1,11 @@
 
 module Ionic.Loading where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -29,12 +28,12 @@ type IonLoadingProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 
 foreign import _ionLoading :: ReactComponent IonLoadingProps
 
 ionLoading :: forall r. Coercible r IonLoadingProps => r -> JSX
-ionLoading = element _ionLoading <<< coerce
+ionLoading = ionElement _ionLoading
 

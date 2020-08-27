@@ -1,12 +1,11 @@
 
 module Ionic.Popover where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     
@@ -29,12 +28,15 @@ type IonPopoverProps = {
     onDidPresent :: EventHandler |+| Undefined,
     onWillDismiss :: EventHandler |+| Undefined,
     onWillPresent :: EventHandler |+| Undefined,
-    key :: String |+| Number
+    key :: String |+| Number |+| Undefined
 }
 
 
 foreign import _ionPopover :: ReactComponent IonPopoverProps
 
 ionPopover :: forall r. Coercible r IonPopoverProps => r -> JSX
-ionPopover = element _ionPopover <<< coerce
+ionPopover = ionElement _ionPopover
+
+ionPopover_ :: Array JSX -> JSX
+ionPopover_ children = ionPopover {children}
 

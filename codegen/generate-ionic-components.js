@@ -38,15 +38,16 @@ const createProxyComponent = async (componentName, s, isJs) => {
     var pickers = getPickers([s], `Pick<import("react").HTMLAttributes<`);
     var data = await withFileDo(`./node_modules/@types/react/index.d.ts`);    
     var subTypes = [];
-    await printRowType(`${componentName}Props`, 
-        await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, subTypes),
-        fileWriter);
+    var props = await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, subTypes);
+    await printRowType(`${componentName}Props`, props, fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
         await printRowType(element.type, element.rows, fileWriter);
     }
-    await generateComponentFunc(lowerName, fileWriter);
+    await generateComponentFunc(lowerName, fileWriter, hasChildren(props));
 };
+
+
 
 const getComponentName = (statement) => {
     var match = (/export declare const (\w+):/g.exec(statement));
@@ -66,20 +67,25 @@ const generateComponent = async (componentName, isJs) => {
     }
     var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
     var subTypes = [];
-    await printRowType(`${upperName}Props`, flatten([], [
+    var props = flatten([], [
         await parseInterfaceOptions(componentName, lines, subTypes), 
         await parseBasicReactProps(lines, subTypes),
         await parseComponentProps(componentName, lines, subTypes),
         await parseHtmlAttributes(lines, subTypes), 
         await parseReactProps('Controller', lines, subTypes), 
         await parseReactProps('Overlay', lines, subTypes),
-        parseRefAttributes(lines)]), fileWriter);
+        parseRefAttributes(lines)]);
+    await printRowType(`${upperName}Props`, props, fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
         await printRowType(element.type, element.rows, fileWriter);
     }
-    await generateComponentFunc(lowerName, fileWriter);
+    await generateComponentFunc(lowerName, fileWriter, hasChildren(props));
 };
+
+const hasChildren = (props) => {
+    return props.some(p => p.includes("children :: Array JSX |+| Undefined"));
+}
 
 const getPickers = (lines, pickIndicator) => {
     var s = lines.filter(l => l.includes(pickIndicator))[0];
@@ -136,18 +142,25 @@ const parseReactProps = async (name, lines, writeOutput) => {
 
 const parseRefAttributes = (lines) => {
     if(lines.some(l => l.includes(".RefAttributes<"))){
-        return ["    key :: String |+| Number"];
+        return ["    key :: String |+| Number |+| Undefined"];
     }
     return [];
 };
 
-const generateComponentFunc = async (name, writeOutput) => {
+const generateComponentFunc = async (name, writeOutput, hasChildren) => {
     return await writeOutput(`
 foreign import _${name} :: ReactComponent ${upperFist(name)}Props
 
 ${name} :: forall r. Coercible r ${upperFist(name)}Props => r -> JSX
-${name} = element _${name} <<< coerce
-`);    
+${name} = ionElement _${name}
+${convinientChildFunc(name, hasChildren)}`);    
+};
+
+const convinientChildFunc = (name, hasChildren) => {
+    return hasChildren ? `
+${name}_ :: Array JSX -> JSX
+${name}_ children = ${name} {children}
+` : "";
 };
 
 const parseInterfaceOptions = async (componentName, lines, writeOutput) => {
@@ -195,7 +208,8 @@ const getRowTypeElements = async (type, lines, pickers, writeOutput, depths = 1)
     var baseName = getBaseTypeName(lines, type);
     if(type == 'HTMLAttributes'){
         return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(
-            await getRowTypeElements("DOMAttributes", lines, pickers, writeOutput, 2));
+            await getRowTypeElements("DOMAttributes", lines, pickers, writeOutput, 2)).concat(
+                await getRowTypeElements("AriaAttributes", lines, pickers, writeOutput));
     } else if(baseName != undefined) {
         var data = await withFileDo("./node_modules/@ionic/core/dist/types/stencil-public-runtime.d.ts");
         return (await getRowTypesFromRegion(type, lines, pickers, writeOutput, depths)).concat(
@@ -220,8 +234,12 @@ const isPicked = (e, pickers) => {
 
 
 const generateRowTypeElement = (lines, pickers, writeOutput) => async (rowEl) => {
-    return `    ${rowEl.name} :: ${await generateType(rowEl.type, lines, pickers, writeOutput)} |+| Undefined`;
+    return `    ${fixName(rowEl.name)} :: ${await generateType(rowEl.type, lines, pickers, writeOutput)} |+| Undefined`;
 };
+
+const fixName = (name) => {
+    return name.replace(/-/g,"").replace(/\'/g,"");
+}
 
 const generateType = async (typeScriptType, lines, pickers, writeOutput) => {
     if(typeScriptType.includes("=>")) return "EventHandler";
@@ -289,17 +307,16 @@ const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
 
 const printHeader = async (isJs, name, writeOutput) => {
     await writeOutput(isJs ? `
-    "use strict";
-    var Ionic = require("@ionic/react");
+"use strict";
+var Ionic = require("@ionic/react");
     `:`
 module Ionic.${name} where
 
-import Prelude
-
+import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
-import React.Basic (JSX, ReactComponent, element)
+import React.Basic (JSX, ReactComponent)
 import React.Basic.Events (EventHandler)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
     `);  

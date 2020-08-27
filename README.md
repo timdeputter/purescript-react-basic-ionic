@@ -10,7 +10,7 @@ npm i -S react @ionic/react
 spago install react-basic react-basic-ionic react-basic-hooks
 ```
 
-
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
+
