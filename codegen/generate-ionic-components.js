@@ -3,15 +3,20 @@ const util = require('util');
 
 
 var generateIonicTypes = async (isJs) => {
-    await generateComponent("Alert", isJs);
-    await generateComponent("ActionSheet", isJs);
-    await generateComponent("Loading", isJs);
-    await generateComponent("Modal", isJs);
-    await generateComponent("Picker", isJs);
-    await generateComponent("Popover", isJs);
-    await generateComponent("Icon", isJs);
-    await generateComponent("Page", isJs);
-    await generateComponent("Toast", isJs);
+    await generateComponent("Alert", {isJs});
+    await generateComponent("ActionSheet", {isJs});
+    await generateComponent("Loading", {isJs});
+    await generateComponent("Modal", {isJs});
+    await generateComponent("Picker", {isJs});
+    await generateComponent("Popover", {isJs});
+    await generateComponent("Icon", {isJs});
+    await generateComponent("Page", {isJs});
+    await generateComponent("Toast", {isJs});
+    await generateComponent("ReactRouter", {isJs, basePath: './node_modules/@ionic/react-router/dist/types/ReactRouter', hasDefaultChildren: true});
+    await generateComponent("RouterOutlet", {isJs, hasDefaultChildren: true});
+    await generateComponent("Tabs", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation', hasDefaultChildren:true});
+    await generateComponent("TabBar", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'});
+    await generateComponent("TabButton", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'});
     await generateProxyComponents(isJs);
 };
 
@@ -56,7 +61,9 @@ const getComponentName = (statement) => {
 };
 
 
-const generateComponent = async (componentName, isJs) => {
+const generateComponent = async (componentName, opts) => {
+    var isJs, basePath, hasDefaultChildren;
+    ({isJs = false, basePath = './node_modules/@ionic/react/dist/types/components', hasDefaultChildren = false} = opts);
     var lowerName = `ion${componentName}`;
     var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
@@ -65,11 +72,13 @@ const generateComponent = async (componentName, isJs) => {
         await genJavascriptCode(lowerName, fileWriter);
         return;
     }
-    var lines = (await withFileDo(`./node_modules/@ionic/react/dist/types/components/${upperName}.d.ts`)).split("\n");
+    var lines = (await withFileDo(`${basePath}/${upperName}.d.ts`)).split("\n");
     var subTypes = [];
-    var props = flatten([], [
+    var props = flatten(hasDefaultChildren ? ["    children :: Array JSX |+| Undefined"] : [], [
         await parseInterfaceOptions(componentName, lines, subTypes), 
         await parseBasicReactProps(lines, subTypes),
+        await parseLocalJSXProps(upperName, lines, subTypes),
+        await parseBrowserRouterProps(lines, subTypes),
         await parseComponentProps(componentName, lines, subTypes),
         await parseHtmlAttributes(lines, subTypes), 
         await parseReactProps('Controller', lines, subTypes), 
@@ -113,6 +122,24 @@ const getFileWriter = async (componentName, isJs) => {
 
 const parseComponentProps = async (componentName, lines, writeOutput) => {
     return await getRowTypeElements(`Ion${componentName}Props`, lines, [], writeOutput);
+};
+
+
+const parseLocalJSXProps = async (componentName, lines, writeOutput) => {
+    if(lines.some(l => l.includes(`LocalJSX.${componentName}`))){
+        var data = await withFileDo(`./node_modules/@ionic/core/dist/types/components.d.ts`);    
+        return await getRowTypeElements(componentName, getLineData(data), [], writeOutput);
+    }
+    return [];
+};
+
+
+const parseBrowserRouterProps = async (lines, writeOutput) => {
+    if(lines.some(l => l.includes("import { BrowserRouterProps } from 'react-router-dom';"))){
+        var data = await withFileDo(`./node_modules/@types/react-router-dom/index.d.ts`);    
+        return await getRowTypeElements("BrowserRouterProps", getLineData(data), [], writeOutput);
+    }
+    return [];
 };
 
 const parseBasicReactProps = async (lines, writeOutput) => {
@@ -238,7 +265,7 @@ const generateRowTypeElement = (lines, pickers, writeOutput) => async (rowEl) =>
 };
 
 const fixName = (name) => {
-    return name.replace(/-/g,"").replace(/\'/g,"");
+    return name.replace(/-/g,"").replace(/\'/g,"").replace(/\"/g,"");
 }
 
 const generateType = async (typeScriptType, lines, pickers, writeOutput) => {

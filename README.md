@@ -9,10 +9,7 @@ First install react and ionic-react with npm. Then install purescript deps with 
 npm i -S react @ionic/react
 spago install react-basic react-basic-ionic react-basic-hooks
 ```
-## Todo
 
-- Generate code for IonReactRouter, IonRouterOutlet, Route, etc.
-- Generate code for IonTabBar, IonTabs, IonTabButton, etc.
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
