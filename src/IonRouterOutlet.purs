@@ -16,11 +16,9 @@ type IonRouterOutletProps = {
     style :: String |+| Undefined,
     animated :: Boolean |+| Undefined,
     animation :: String |+| Undefined,
-    commit: (enteringEl: HTMLElement, leavingEl: HTMLElement | undefined, opts :: EventHandler |+| Undefined,
     delegate :: String |+| Undefined,
     getRouteId :: EventHandler |+| Undefined,
     mode :: String |+| Undefined,
-    setRouteId: (id: string, params: ComponentProps | undefined, direction: RouterDirection, animation :: EventHandler |+| Undefined,
     swipeHandler :: String |+| Undefined,
     key :: String |+| Number |+| Undefined
 }

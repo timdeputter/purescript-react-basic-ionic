@@ -83,7 +83,7 @@ const generateComponent = async (componentName, opts) => {
         await parseHtmlAttributes(lines, subTypes), 
         await parseReactProps('Controller', lines, subTypes), 
         await parseReactProps('Overlay', lines, subTypes),
-        parseRefAttributes(lines)]);
+        parseRefAttributes(lines)]).filter(e => !e.includes("commit") && !e.includes("(id: string, params: ComponentProps | undefined, direction: RouterDirection, animation :: "));
     await printRowType(`${upperName}Props`, props, fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
