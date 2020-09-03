@@ -18,7 +18,26 @@ var generateIonicTypes = async (isJs) => {
     await generateComponent("TabBar", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'});
     await generateComponent("TabButton", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'});
     await generateProxyComponents(isJs);
+    await generateComponentPure("Route", [
+        "path :: String |+| Undefined",
+        "component :: (ReactComponent {}) |+| Undefined",
+        "exact :: Boolean |+| Undefined"
+    ], isJs)
 };
+
+
+const generateComponentPure = async (componentName, props, isJs) => {
+    const lowerName = lowerFist(componentName);
+    var fileWriter = await getFileWriter(componentName, isJs);
+    await printHeader(isJs, componentName, fileWriter);
+    if(isJs){
+        await genJavascriptCode(lowerName, fileWriter);
+        return;
+    }
+    await printRowType(`${componentName}Props`, props, fileWriter);
+    await generateComponentFunc(lowerName, fileWriter, hasChildren(props));
+
+}
 
 
 const generateProxyComponents = async (isJs) => {
