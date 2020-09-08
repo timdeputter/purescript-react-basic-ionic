@@ -12,7 +12,7 @@ var generateIonicTypes = async (isJs) => {
     await generateComponent("Icon", {isJs}),
     await generateComponent("Page", {isJs}),
     await generateComponent("Toast", {isJs}),
-    await generateComponent("ReactRouter", {isJs, basePath: './node_modules/@ionic/react-router/dist/types/ReactRouter', hasDefaultChildren: true}),
+    await generateComponent("ReactRouter", {isJs, basePath: './node_modules/@ionic/react-router/dist/types/ReactRouter', module:"@ionic/react-router", hasDefaultChildren: true}),
     await generateComponent("RouterOutlet", {isJs, hasDefaultChildren: true}),
     await generateComponent("Tabs", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation', hasDefaultChildren:true}),
     await generateComponent("TabBar", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'}),
@@ -21,7 +21,15 @@ var generateIonicTypes = async (isJs) => {
         "path :: String |+| Undefined",
         "component :: (ReactComponent {}) |+| Undefined",
         "exact :: Boolean |+| Undefined"
-    ], isJs)],
+    ], {isJs, module: "react-router-dom"}),
+    await generateComponentPure("Redirect", [
+        "to :: String |+| Undefined",
+        "push :: Boolean |+| Undefined",
+        "path :: String |+| Undefined",
+        "exact :: Boolean |+| Undefined",
+        "strict :: Boolean |+| Undefined",
+        "from :: String |+| Undefined"
+    ], {isJs, module: "react-router-dom"})],
     await generateProxyComponents(isJs)]);
     await createIonicExports(exports, isJs);
 };
@@ -36,10 +44,11 @@ const createIonicExports = async (exports, isJs) => {
 ${exp}`);
 };
 
-const generateComponentPure = async (componentName, props, isJs) => {
+const generateComponentPure = async (componentName, props, opts) => {
+    ({isJs = false, module = "@ionic/react"} = opts);
     const lowerName = lowerFist(componentName);
     var fileWriter = await getFileWriter(componentName, isJs);
-    await printHeader(isJs, componentName, fileWriter);
+    await printHeader(isJs, componentName, module, fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
         return;
@@ -68,7 +77,7 @@ const generateProxyComponents = async (isJs) => {
 const createProxyComponent = async (componentName, s, isJs) => {
     const lowerName = lowerFist(componentName);
     var fileWriter = await getFileWriter(componentName, isJs);
-    await printHeader(isJs, componentName, fileWriter);
+    await printHeader(isJs, componentName, "@ionic/react", fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
         return;
@@ -99,11 +108,11 @@ const getComponentName = (statement) => {
 
 const generateComponent = async (componentName, opts) => {
     var isJs, basePath, hasDefaultChildren;
-    ({isJs = false, basePath = './node_modules/@ionic/react/dist/types/components', hasDefaultChildren = false} = opts);
+    ({isJs = false, basePath = './node_modules/@ionic/react/dist/types/components', module = "@ionic/react", hasDefaultChildren = false} = opts);
     var lowerName = `ion${componentName}`;
     var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
-    await printHeader(isJs, upperName, fileWriter);
+    await printHeader(isJs, upperName, module, fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
         return;
@@ -371,10 +380,10 @@ const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
 };
 
 
-const printHeader = async (isJs, name, writeOutput) => {
+const printHeader = async (isJs, name, module, writeOutput) => {
     await writeOutput(isJs ? `
 "use strict";
-var Ionic = require("@ionic/react");
+var Ionic = require("${module}");
     `:`
 module Ionic.${name} where
 

@@ -30,6 +30,8 @@ import Ionic.IonTabButton (ionTabButton, ionTabButton_) as Exports
 
 import Ionic.Route (route) as Exports
 
+import Ionic.Redirect (redirect) as Exports
+
 import Ionic.IonApp (ionApp, ionApp_) as Exports
 
 import Ionic.IonTab (ionTab, ionTab_) as Exports
