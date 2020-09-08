@@ -1,6 +1,6 @@
 
 "use strict";
-var Ionic = require("@ionic/react");
+var Ionic = require("react-router-dom");
     
 exports._route = Ionic.Route;  
 

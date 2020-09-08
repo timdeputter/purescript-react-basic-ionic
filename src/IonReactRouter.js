@@ -1,6 +1,6 @@
 
 "use strict";
-var Ionic = require("@ionic/react");
+var Ionic = require("@ionic/react-router");
     
 exports._ionReactRouter = Ionic.IonReactRouter;  
 
