@@ -1,5 +1,5 @@
 
-module Ionic.Tabs where
+module Ionic.IonTabs where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

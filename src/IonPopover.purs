@@ -1,5 +1,5 @@
 
-module Ionic.Popover where
+module Ionic.IonPopover where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

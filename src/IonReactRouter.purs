@@ -1,5 +1,5 @@
 
-module Ionic.ReactRouter where
+module Ionic.IonReactRouter where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

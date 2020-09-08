@@ -1,5 +1,5 @@
 
-module Ionic.Picker where
+module Ionic.IonPicker where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

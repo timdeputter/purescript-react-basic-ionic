@@ -1,5 +1,5 @@
 
-module Ionic.Modal where
+module Ionic.IonModal where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

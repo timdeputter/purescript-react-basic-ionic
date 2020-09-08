@@ -1,5 +1,5 @@
 
-module Ionic.Page where
+module Ionic.IonPage where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

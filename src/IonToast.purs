@@ -1,5 +1,5 @@
 
-module Ionic.Toast where
+module Ionic.IonToast where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

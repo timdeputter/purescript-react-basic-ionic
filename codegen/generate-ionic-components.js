@@ -86,7 +86,7 @@ const generateComponent = async (componentName, opts) => {
     var lowerName = `ion${componentName}`;
     var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
-    await printHeader(isJs, componentName, fileWriter);
+    await printHeader(isJs, upperName, fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
         return;

@@ -1,5 +1,5 @@
 
-module Ionic.Alert where
+module Ionic.IonAlert where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

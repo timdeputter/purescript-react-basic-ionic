@@ -1,5 +1,5 @@
 
-module Ionic.ActionSheet where
+module Ionic.IonActionSheet where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

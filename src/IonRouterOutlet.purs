@@ -1,5 +1,5 @@
 
-module Ionic.RouterOutlet where
+module Ionic.IonRouterOutlet where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

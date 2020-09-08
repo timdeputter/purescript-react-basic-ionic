@@ -1,5 +1,5 @@
 
-module Ionic.Icon where
+module Ionic.IonIcon where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

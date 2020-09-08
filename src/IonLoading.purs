@@ -1,5 +1,5 @@
 
-module Ionic.Loading where
+module Ionic.IonLoading where
 
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)

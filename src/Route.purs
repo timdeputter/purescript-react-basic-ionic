@@ -11,7 +11,7 @@ import Untagged.Union (type (|+|))
     
 type RouteProps = {
 path :: String |+| Undefined,
-component :: (ReactComponent ()) |+| Undefined,
+component :: (ReactComponent {}) |+| Undefined,
 exact :: Boolean |+| Undefined
 }
 
