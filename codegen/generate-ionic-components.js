@@ -49,7 +49,7 @@ const generateComponentPure = async (componentName, props, opts) => {
     ({isJs = false, module = "@ionic/react"} = opts);
     const lowerName = lowerFist(componentName);
     var fileWriter = await getFileWriter(componentName, isJs);
-    await printHeader(isJs, componentName, module, fileWriter);
+    await printHeader(isJs, componentName, module, props, fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
         return;
@@ -78,15 +78,15 @@ const generateProxyComponents = async (isJs) => {
 const createProxyComponent = async (componentName, s, isJs) => {
     const lowerName = lowerFist(componentName);
     var fileWriter = await getFileWriter(componentName, isJs);
-    await printHeader(isJs, componentName, "@ionic/react", fileWriter);
-    if(isJs){
-        await genJavascriptCode(lowerName, fileWriter);
-        return;
-    }
     var pickers = getPickers([s], `Pick<import("react").HTMLAttributes<`);
     var data = await withFileDo(`./node_modules/@types/react/index.d.ts`);    
     var subTypes = [];
     var props = await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, subTypes);
+    await printHeader(isJs, componentName, "@ionic/react", props, fileWriter);
+    if(isJs){
+        await genJavascriptCode(lowerName, fileWriter);
+        return;
+    }
     await printRowType(`${componentName}Props`, props, fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
@@ -113,11 +113,6 @@ const generateComponent = async (componentName, opts) => {
     var lowerName = `ion${componentName}`;
     var upperName = `Ion${componentName}`;
     var fileWriter = await getFileWriter(upperName, isJs);
-    await printHeader(isJs, upperName, module, fileWriter);
-    if(isJs){
-        await genJavascriptCode(lowerName, fileWriter);
-        return;
-    }
     var lines = (await withFileDo(`${basePath}/${upperName}.d.ts`)).split("\n");
     var subTypes = [];
     var props = flatten(hasDefaultChildren ? ["    children :: Array JSX |+| Undefined"] : [], [
@@ -130,6 +125,11 @@ const generateComponent = async (componentName, opts) => {
         await parseReactProps('Controller', lines, subTypes), 
         await parseReactProps('Overlay', lines, subTypes),
         parseRefAttributes(lines)]).filter(e => !e.includes("commit") && !e.includes("(id: string, params: ComponentProps | undefined, direction: RouterDirection, animation :: "));
+    await printHeader(isJs, upperName, module, props, fileWriter);
+    if(isJs){
+        await genJavascriptCode(lowerName, fileWriter);
+        return;
+    }
     await printRowType(`${upperName}Props`, props, fileWriter);
     for (let index = 0; index < subTypes.length; index++) {
         const element = subTypes[index];
@@ -381,17 +381,17 @@ const findIndexOfNthClosingBrace = (lines, closingBraceNo, idx) => {
 };
 
 
-const printHeader = async (isJs, name, module, writeOutput) => {
+const printHeader = async (isJs, name, module, props, writeOutput) => {
     await writeOutput(isJs ? `
 "use strict";
 var Ionic = require("${module}");
     `:`
 module Ionic.${name} where
-
+${props.some(p => p.includes("Unit")) ? "\nimport Prelude\n\n" : ""}
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
 import React.Basic (JSX, ReactComponent)
-import React.Basic.Events (EventHandler)
+${props.some(p => p.includes("EventHandler")) ? "import React.Basic.Events (EventHandler)" : ""}
 import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     

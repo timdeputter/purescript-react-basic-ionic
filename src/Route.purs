@@ -1,10 +1,13 @@
 
 module Ionic.Route where
 
+import Prelude
+
+
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
 import React.Basic (JSX, ReactComponent)
-import React.Basic.Events (EventHandler)
+
 import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
