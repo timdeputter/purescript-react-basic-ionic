@@ -119,47 +119,44 @@ let additions =
 
 
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.6-20200127/packages.dhall sha256:06a623f48c49ea1c7675fdf47f81ddb02ae274558e29f511efae1df99ea92fb8
+      https://github.com/purescript/package-sets/releases/download/psc-0.13.8-20200831/packages.dhall sha256:cdb3529cac2cd8dd780f07c80fd907d5faceae7decfcaa11a12037df68812c83
 
 let overrides = {=}
 
-let additions =  { literals =
-    { dependencies =
-      [ "assert"
-      , "effect"
-      , "console"
-      , "integers"
-      , "numbers"
-      , "partial"
-      , "psci-support"
-      , "unsafe-coerce"
-      , "typelevel-prelude"
-      ]
-    , repo =
-      "https://github.com/jvliwanag/purescript-literal.git"
-    , version =
-      "7b2ae20f77c67b7e419a92fdd0dc7a09b447b18e"
-   },
-   untagged-union =
-    { dependencies =
-        [ "assert"
-        , "console"
-        , "effect"
-        , "foreign"
-        , "foreign-object"
-        , "literals"
-        , "maybe"
-        , "newtype"
-        , "proxy"
-        , "psci-support"
-        , "tuples"
-        , "unsafe-coerce"
-        ]
-    , repo =
-      "https://github.com/jvliwanag/purescript-untagged-union.git"
-    , version =
-      "71dbd2deaa49b6daa5dd7698938dc0731a67fac5"
-   }
-}
+let additions =
+      { literals =
+        { dependencies =
+          [ "assert"
+          , "effect"
+          , "console"
+          , "integers"
+          , "numbers"
+          , "partial"
+          , "psci-support"
+          , "unsafe-coerce"
+          , "typelevel-prelude"
+          ]
+        , repo = "https://github.com/jvliwanag/purescript-literal.git"
+        , version = "7b2ae20f77c67b7e419a92fdd0dc7a09b447b18e"
+        }
+      , untagged-union =
+        { dependencies =
+          [ "assert"
+          , "console"
+          , "effect"
+          , "foreign"
+          , "foreign-object"
+          , "literals"
+          , "maybe"
+          , "newtype"
+          , "proxy"
+          , "psci-support"
+          , "tuples"
+          , "unsafe-coerce"
+          ]
+        , repo = "https://github.com/jvliwanag/purescript-untagged-union.git"
+        , version = "71dbd2deaa49b6daa5dd7698938dc0731a67fac5"
+        }
+      }
 
 in  upstream // overrides // additions
