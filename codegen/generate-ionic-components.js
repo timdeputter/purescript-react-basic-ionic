@@ -20,6 +20,7 @@ var generateIonicTypes = async (isJs) => {
     await generateComponentPure("Route", [
         "path :: String |+| Undefined",
         "component :: (ReactComponent {}) |+| Undefined",
+        "render :: (Unit -> JSX) |+| Undefined",
         "exact :: Boolean |+| Undefined"
     ], {isJs, module: "react-router-dom"}),
     await generateComponentPure("Redirect", [
