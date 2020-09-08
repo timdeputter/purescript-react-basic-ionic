@@ -3,28 +3,38 @@ const util = require('util');
 
 
 var generateIonicTypes = async (isJs) => {
-    await generateComponent("Alert", {isJs});
-    await generateComponent("ActionSheet", {isJs});
-    await generateComponent("Loading", {isJs});
-    await generateComponent("Modal", {isJs});
-    await generateComponent("Picker", {isJs});
-    await generateComponent("Popover", {isJs});
-    await generateComponent("Icon", {isJs});
-    await generateComponent("Page", {isJs});
-    await generateComponent("Toast", {isJs});
-    await generateComponent("ReactRouter", {isJs, basePath: './node_modules/@ionic/react-router/dist/types/ReactRouter', hasDefaultChildren: true});
-    await generateComponent("RouterOutlet", {isJs, hasDefaultChildren: true});
-    await generateComponent("Tabs", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation', hasDefaultChildren:true});
-    await generateComponent("TabBar", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'});
-    await generateComponent("TabButton", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'});
-    await generateProxyComponents(isJs);
+    var exports = flatten([], [[await generateComponent("Alert", {isJs}),
+    await generateComponent("ActionSheet", {isJs}),
+    await generateComponent("Loading", {isJs}),
+    await generateComponent("Modal", {isJs}),
+    await generateComponent("Picker", {isJs}),
+    await generateComponent("Popover", {isJs}),
+    await generateComponent("Icon", {isJs}),
+    await generateComponent("Page", {isJs}),
+    await generateComponent("Toast", {isJs}),
+    await generateComponent("ReactRouter", {isJs, basePath: './node_modules/@ionic/react-router/dist/types/ReactRouter', hasDefaultChildren: true}),
+    await generateComponent("RouterOutlet", {isJs, hasDefaultChildren: true}),
+    await generateComponent("Tabs", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation', hasDefaultChildren:true}),
+    await generateComponent("TabBar", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'}),
+    await generateComponent("TabButton", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'}),
     await generateComponentPure("Route", [
         "path :: String |+| Undefined",
         "component :: (ReactComponent {}) |+| Undefined",
         "exact :: Boolean |+| Undefined"
-    ], isJs)
+    ], isJs)],
+    await generateProxyComponents(isJs)]);
+    await createIonicExports(exports, isJs);
 };
 
+const createIonicExports = async (exports, isJs) => {
+    if(isJs) return;
+    const path = `./src/Ionic.purs`;
+    var exp = exports.map(e => `import Ionic.${e.module} (${e.exports.join(", ")}) as Exports`).join("\n\n");
+    await fs.writeFileSync(path,
+`module Ionic (module Exports) where
+
+${exp}`);
+};
 
 const generateComponentPure = async (componentName, props, isJs) => {
     const lowerName = lowerFist(componentName);
@@ -36,19 +46,23 @@ const generateComponentPure = async (componentName, props, isJs) => {
     }
     await printRowType(`${componentName}Props`, props, fileWriter);
     await generateComponentFunc(lowerName, fileWriter, hasChildren(props));
-
+    const exports = props.some(p => p.includes("children")) 
+        ? [lowerName, lowerName + "_"] : [lowerName];
+    return {module: componentName, exports};
 }
 
 
 const generateProxyComponents = async (isJs) => {
+    var modules = [];
     var statements = getStatements(await withFileDo(`./node_modules/@ionic/react/dist/types/components/proxies.d.ts`));
     for (let index = 0; index < statements.length; index++) {
         const s = statements[index];
         var componentName = getComponentName(s);
         if(componentName){
-            await createProxyComponent(componentName, s, isJs);
+            modules.push(await createProxyComponent(componentName, s, isJs));
         }        
     }
+    return modules;
 };
 
 const createProxyComponent = async (componentName, s, isJs) => {
@@ -69,6 +83,9 @@ const createProxyComponent = async (componentName, s, isJs) => {
         await printRowType(element.type, element.rows, fileWriter);
     }
     await generateComponentFunc(lowerName, fileWriter, hasChildren(props));
+    const exports = props.some(p => p.includes("children")) 
+        ? [lowerName, lowerName + "_"] : [lowerName];
+    return {module: componentName, exports};
 };
 
 
@@ -109,6 +126,9 @@ const generateComponent = async (componentName, opts) => {
         await printRowType(element.type, element.rows, fileWriter);
     }
     await generateComponentFunc(lowerName, fileWriter, hasChildren(props));
+    const exports = hasDefaultChildren || props.some(p => p.includes("children")) 
+        ? [lowerName, lowerName + "_"] : [lowerName];
+    return {module: upperName, exports};
 };
 
 const hasChildren = (props) => {
