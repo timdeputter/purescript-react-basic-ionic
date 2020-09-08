@@ -26,7 +26,7 @@ import Ionic.IonTabs (ionTabs, ionTabs_) as Exports
 
 import Ionic.IonTabBar (ionTabBar, ionTabBar_) as Exports
 
-import Ionic.IonTabButton (ionTabButton) as Exports
+import Ionic.IonTabButton (ionTabButton, ionTabButton_) as Exports
 
 import Ionic.Route (route) as Exports
 

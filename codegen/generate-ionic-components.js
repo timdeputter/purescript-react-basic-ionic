@@ -16,7 +16,7 @@ var generateIonicTypes = async (isJs) => {
     await generateComponent("RouterOutlet", {isJs, hasDefaultChildren: true}),
     await generateComponent("Tabs", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation', hasDefaultChildren:true}),
     await generateComponent("TabBar", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'}),
-    await generateComponent("TabButton", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation'}),
+    await generateComponent("TabButton", {isJs, basePath: './node_modules/@ionic/react/dist/types/components/navigation', hasDefaultChildren: true}),
     await generateComponentPure("Route", [
         "path :: String |+| Undefined",
         "component :: (ReactComponent {}) |+| Undefined",

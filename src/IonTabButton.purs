@@ -10,6 +10,7 @@ import Untagged.Union (type (|+|))
     
     
 type IonTabButtonProps = {
+    children :: Array JSX |+| Undefined,
     disabled :: Boolean |+| Undefined,
     download :: String |+| Undefined,
     href :: String |+| Undefined,
@@ -26,4 +27,7 @@ foreign import _ionTabButton :: ReactComponent IonTabButtonProps
 
 ionTabButton :: forall r. Coercible r IonTabButtonProps => r -> JSX
 ionTabButton = ionElement _ionTabButton
+
+ionTabButton_ :: Array JSX -> JSX
+ionTabButton_ children = ionTabButton {children}
 
