@@ -263,7 +263,22 @@ type IonFabButtonProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    activated :: Boolean |+| Undefined,
+    closeIcon :: String |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    download :: String |+| Undefined,
+    href :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    rel :: String |+| Undefined,
+    routerAnimation :: String |+| Undefined,
+    routerDirection :: String |+| Undefined,
+    show :: Boolean |+| Undefined,
+    size :: String |+| Undefined,
+    target :: String |+| Undefined,
+    translucent :: Boolean |+| Undefined,
+    type :: String |+| Undefined
 }
 
 type CSSProperties = {

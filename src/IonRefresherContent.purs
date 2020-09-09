@@ -262,7 +262,11 @@ type IonRefresherContentProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    pullingIcon :: String |+| Undefined,
+    pullingText :: String |+| Undefined,
+    refreshingSpinner :: String |+| Undefined,
+    refreshingText :: String |+| Undefined
 }
 
 

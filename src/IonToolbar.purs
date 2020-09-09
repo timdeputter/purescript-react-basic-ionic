@@ -262,7 +262,9 @@ type IonToolbarProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    color :: String |+| Undefined,
+    mode :: String |+| Undefined
 }
 
 

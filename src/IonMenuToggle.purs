@@ -262,7 +262,9 @@ type IonMenuToggleProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    autoHide :: Boolean |+| Undefined,
+    menu :: String |+| Undefined
 }
 
 

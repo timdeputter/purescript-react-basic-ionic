@@ -262,7 +262,8 @@ type IonGridProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    fixed :: Boolean |+| Undefined
 }
 
 

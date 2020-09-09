@@ -263,7 +263,16 @@ type IonItemOptionProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    download :: String |+| Undefined,
+    expandable :: Boolean |+| Undefined,
+    href :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    rel :: String |+| Undefined,
+    target :: String |+| Undefined,
+    type :: String |+| Undefined
 }
 
 type CSSProperties = {

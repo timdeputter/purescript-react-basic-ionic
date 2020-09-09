@@ -262,7 +262,13 @@ type IonMenuButtonProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    autoHide :: Boolean |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    menu :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    type :: String |+| Undefined
 }
 
 

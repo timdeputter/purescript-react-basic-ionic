@@ -263,7 +263,23 @@ type IonButtonProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    buttonType :: String |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    download :: String |+| Undefined,
+    expand :: String |+| Undefined,
+    fill :: String |+| Undefined,
+    href :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    rel :: String |+| Undefined,
+    routerAnimation :: String |+| Undefined,
+    routerDirection :: String |+| Undefined,
+    shape :: String |+| Undefined,
+    size :: String |+| Undefined,
+    strong :: Boolean |+| Undefined,
+    target :: String |+| Undefined,
+    type :: String |+| Undefined
 }
 
 type CSSProperties = {

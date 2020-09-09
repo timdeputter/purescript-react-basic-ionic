@@ -262,7 +262,10 @@ type IonRadioGroupProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    allowEmptySelection :: Boolean |+| Undefined,
+    name :: String |+| Undefined,
+    value :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| String |+| Undefined
 }
 
 

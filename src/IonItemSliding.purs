@@ -262,7 +262,13 @@ type IonItemSlidingProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    close :: EventHandler |+| Undefined,
+    closeOpened :: EventHandler |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    getOpenAmount :: EventHandler |+| Undefined,
+    getSlidingRatio :: EventHandler |+| Undefined,
+    open :: String |+| Undefined
 }
 
 

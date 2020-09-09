@@ -262,7 +262,11 @@ type IonSelectPopoverProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    header :: String |+| Undefined,
+    message :: String |+| Undefined,
+    options :: Array String |+| Undefined,
+    subHeader :: String |+| Undefined
 }
 
 

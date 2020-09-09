@@ -81,7 +81,8 @@ const createProxyComponent = async (componentName, s, isJs) => {
     var pickers = getPickers([s], `Pick<import("react").HTMLAttributes<`);
     var data = await withFileDo(`./node_modules/@types/react/index.d.ts`);    
     var subTypes = [];
-    var props = await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, subTypes);
+    var props = flatten([], [await getRowTypeElements(`HTMLAttributes`, getLineData(data), pickers, subTypes),
+        await parseLocalJSXProps(componentName, subTypes)]);
     await printHeader(isJs, componentName, "@ionic/react", props, fileWriter);
     if(isJs){
         await genJavascriptCode(lowerName, fileWriter);
@@ -118,7 +119,7 @@ const generateComponent = async (componentName, opts) => {
     var props = flatten(hasDefaultChildren ? ["    children :: Array JSX |+| Undefined"] : [], [
         await parseInterfaceOptions(componentName, lines, subTypes), 
         await parseBasicReactProps(lines, subTypes),
-        await parseLocalJSXProps(upperName, lines, subTypes),
+        await parseLocalJSXProps(upperName, subTypes),
         await parseBrowserRouterProps(lines, subTypes),
         await parseComponentProps(componentName, lines, subTypes),
         await parseHtmlAttributes(lines, subTypes), 
@@ -174,12 +175,9 @@ const parseComponentProps = async (componentName, lines, writeOutput) => {
 };
 
 
-const parseLocalJSXProps = async (componentName, lines, writeOutput) => {
-    if(lines.some(l => l.includes(`LocalJSX.${componentName}`))){
+const parseLocalJSXProps = async (componentName,  writeOutput) => {
         var data = await withFileDo(`./node_modules/@ionic/core/dist/types/components.d.ts`);    
         return await getRowTypeElements(componentName, getLineData(data), [], writeOutput);
-    }
-    return [];
 };
 
 

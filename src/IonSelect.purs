@@ -262,7 +262,20 @@ type IonSelectProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    cancelText :: String |+| Undefined,
+    compareWith :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    interface :: String |+| Undefined,
+    interfaceOptions :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| Undefined,
+    mode :: String |+| Undefined,
+    multiple :: Boolean |+| Undefined,
+    name :: String |+| Undefined,
+    okText :: String |+| Undefined,
+    open: (event :: EventHandler |+| Undefined,
+    placeholder :: String |+| Undefined,
+    selectedText :: String |+| Undefined,
+    value :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| String |+| Undefined
 }
 
 

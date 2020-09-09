@@ -262,7 +262,31 @@ type IonColProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    offset :: String |+| Undefined,
+    offsetLg :: String |+| Undefined,
+    offsetMd :: String |+| Undefined,
+    offsetSm :: String |+| Undefined,
+    offsetXl :: String |+| Undefined,
+    offsetXs :: String |+| Undefined,
+    pull :: String |+| Undefined,
+    pullLg :: String |+| Undefined,
+    pullMd :: String |+| Undefined,
+    pullSm :: String |+| Undefined,
+    pullXl :: String |+| Undefined,
+    pullXs :: String |+| Undefined,
+    push :: String |+| Undefined,
+    pushLg :: String |+| Undefined,
+    pushMd :: String |+| Undefined,
+    pushSm :: String |+| Undefined,
+    pushXl :: String |+| Undefined,
+    pushXs :: String |+| Undefined,
+    size :: String |+| Undefined,
+    sizeLg :: String |+| Undefined,
+    sizeMd :: String |+| Undefined,
+    sizeSm :: String |+| Undefined,
+    sizeXl :: String |+| Undefined,
+    sizeXs :: String |+| Undefined
 }
 
 

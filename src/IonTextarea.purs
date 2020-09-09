@@ -262,7 +262,30 @@ type IonTextareaProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    autoGrow :: Boolean |+| Undefined,
+    autocapitalize :: String |+| Undefined,
+    autofocus :: Boolean |+| Undefined,
+    clearOnEdit :: Boolean |+| Undefined,
+    color :: String |+| Undefined,
+    cols :: Number |+| Undefined,
+    debounce :: Number |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    enterkeyhint :: String |+| Undefined,
+    getInputElement :: EventHandler |+| Undefined,
+    inputmode :: String |+| Undefined,
+    maxlength :: Number |+| Undefined,
+    minlength :: Number |+| Undefined,
+    mode :: String |+| Undefined,
+    name :: String |+| Undefined,
+    placeholder :: String |+| Undefined,
+    readonly :: Boolean |+| Undefined,
+    required :: Boolean |+| Undefined,
+    rows :: Number |+| Undefined,
+    setFocus :: EventHandler |+| Undefined,
+    spellcheck :: Boolean |+| Undefined,
+    value :: String |+| Undefined,
+    wrap :: String |+| Undefined
 }
 
 

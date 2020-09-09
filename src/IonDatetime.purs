@@ -262,7 +262,31 @@ type IonDatetimeProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    cancelText :: String |+| Undefined,
+    dayNames :: Array String |+| String |+| Undefined,
+    dayShortNames :: Array String |+| String |+| Undefined,
+    dayValues :: Array Number |+| Number |+| String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    displayFormat :: String |+| Undefined,
+    displayTimezone :: String |+| Undefined,
+    doneText :: String |+| Undefined,
+    hourValues :: Array Number |+| Number |+| String |+| Undefined,
+    max :: String |+| Undefined,
+    min :: String |+| Undefined,
+    minuteValues :: Array Number |+| Number |+| String |+| Undefined,
+    mode :: String |+| Undefined,
+    monthNames :: Array String |+| String |+| Undefined,
+    monthShortNames :: Array String |+| String |+| Undefined,
+    monthValues :: Array Number |+| Number |+| String |+| Undefined,
+    name :: String |+| Undefined,
+    open :: EventHandler |+| Undefined,
+    pickerFormat :: String |+| Undefined,
+    pickerOptions :: String |+| Undefined,
+    placeholder :: String |+| Undefined,
+    readonly :: Boolean |+| Undefined,
+    value :: String |+| Undefined,
+    yearValues :: Array Number |+| Number |+| String |+| Undefined
 }
 
 

@@ -262,7 +262,12 @@ type IonSegmentButtonProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    layout :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    type :: String |+| Undefined,
+    value :: String |+| Undefined
 }
 
 

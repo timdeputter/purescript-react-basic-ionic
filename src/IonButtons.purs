@@ -262,7 +262,8 @@ type IonButtonsProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    collapse :: Boolean |+| Undefined
 }
 
 

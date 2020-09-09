@@ -262,7 +262,9 @@ type IonImgProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    alt :: String |+| Undefined,
+    src :: String |+| Undefined
 }
 
 

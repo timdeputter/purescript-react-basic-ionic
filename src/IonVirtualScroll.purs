@@ -262,7 +262,24 @@ type IonVirtualScrollProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    approxFooterHeight :: Number |+| Undefined,
+    approxHeaderHeight :: Number |+| Undefined,
+    approxItemHeight :: Number |+| Undefined,
+    checkEnd :: EventHandler |+| Undefined,
+    checkRange: (offset: number, len :: EventHandler |+| Undefined,
+    domRender :: String |+| Undefined,
+    footerFn :: String |+| Undefined,
+    footerHeight :: String |+| Undefined,
+    headerFn :: String |+| Undefined,
+    headerHeight :: String |+| Undefined,
+    itemHeight :: String |+| Undefined,
+    items :: Array String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| Undefined,
+    nodeRender :: String |+| Undefined,
+    positionForItem :: String |+| Undefined,
+    renderFooter :: EventHandler |+| Undefined,
+    renderHeader :: EventHandler |+| Undefined,
+    renderItem :: EventHandler |+| Undefined
 }
 
 

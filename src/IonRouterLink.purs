@@ -263,7 +263,13 @@ type IonRouterLinkProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    color :: String |+| Undefined,
+    href :: String |+| Undefined,
+    rel :: String |+| Undefined,
+    routerAnimation :: String |+| Undefined,
+    routerDirection :: String |+| Undefined,
+    target :: String |+| Undefined
 }
 
 type CSSProperties = {

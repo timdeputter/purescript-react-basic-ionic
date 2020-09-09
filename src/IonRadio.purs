@@ -262,7 +262,12 @@ type IonRadioProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    mode :: String |+| Undefined,
+    name :: String |+| Undefined,
+    value :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| String |+| Undefined
 }
 
 

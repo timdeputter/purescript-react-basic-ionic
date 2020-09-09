@@ -262,7 +262,10 @@ type IonSplitPaneProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    contentId :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    when :: String |+| Boolean |+| Undefined
 }
 
 

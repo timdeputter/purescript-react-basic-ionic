@@ -262,7 +262,16 @@ type IonRefresherProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    cancel :: EventHandler |+| Undefined,
+    closeDuration :: String |+| Undefined,
+    complete :: EventHandler |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    getProgress :: EventHandler |+| Undefined,
+    pullFactor :: Number |+| Undefined,
+    pullMax :: Number |+| Undefined,
+    pullMin :: Number |+| Undefined,
+    snapbackDuration :: String |+| Undefined
 }
 
 

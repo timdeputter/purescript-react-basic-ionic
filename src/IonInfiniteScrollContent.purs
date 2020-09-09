@@ -262,7 +262,9 @@ type IonInfiniteScrollContentProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    loadingSpinner :: String |+| Undefined,
+    loadingText :: String |+| Undefined
 }
 
 

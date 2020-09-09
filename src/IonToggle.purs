@@ -262,7 +262,13 @@ type IonToggleProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    checked :: Boolean |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    mode :: String |+| Undefined,
+    name :: String |+| Undefined,
+    value :: String |+| Undefined
 }
 
 

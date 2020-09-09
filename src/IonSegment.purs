@@ -262,7 +262,12 @@ type IonSegmentProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    mode :: String |+| Undefined,
+    scrollable :: Boolean |+| Undefined,
+    value :: String |+| Undefined
 }
 
 

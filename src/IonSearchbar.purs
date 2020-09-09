@@ -262,7 +262,27 @@ type IonSearchbarProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    animated :: Boolean |+| Undefined,
+    autocomplete :: String |+| Undefined,
+    autocorrect :: String |+| Undefined,
+    cancelButtonIcon :: String |+| Undefined,
+    cancelButtonText :: String |+| Undefined,
+    clearIcon :: String |+| Undefined,
+    color :: String |+| Undefined,
+    debounce :: Number |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    enterkeyhint :: String |+| Undefined,
+    getInputElement :: EventHandler |+| Undefined,
+    inputmode :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    placeholder :: String |+| Undefined,
+    searchIcon :: String |+| Undefined,
+    setFocus :: EventHandler |+| Undefined,
+    showCancelButton :: String |+| Undefined,
+    spellcheck :: Boolean |+| Undefined,
+    type :: String |+| Undefined,
+    value :: String |+| Undefined
 }
 
 

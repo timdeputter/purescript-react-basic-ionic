@@ -262,7 +262,12 @@ type IonTabProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    active :: Boolean |+| Undefined,
+    component :: String |+| Undefined,
+    delegate :: String |+| Undefined,
+    setActive :: EventHandler |+| Undefined,
+    tab :: String |+| Undefined
 }
 
 

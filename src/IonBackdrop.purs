@@ -262,7 +262,10 @@ type IonBackdropProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    stopPropagation :: Boolean |+| Undefined,
+    tappable :: Boolean |+| Undefined,
+    visible :: Boolean |+| Undefined
 }
 
 

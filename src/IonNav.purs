@@ -262,7 +262,28 @@ type IonNavProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    animated :: Boolean |+| Undefined,
+    animation :: String |+| Undefined,
+    canGoBack: (view :: EventHandler |+| Undefined,
+    delegate :: String |+| Undefined,
+    getActive :: EventHandler |+| Undefined,
+    getByIndex :: String |+| Undefined,
+    getPrevious: (view :: EventHandler |+| Undefined,
+    getRouteId :: EventHandler |+| Undefined,
+    insert: <T extends NavComponent>(insertIndex: number, component: T, componentProps :: String |+| Undefined,
+    insertPages: (insertIndex: number, insertComponents: NavComponent[] | NavComponentWithProps[], opts :: String |+| Undefined,
+    pop: (opts :: String |+| Undefined,
+    popTo: (indexOrViewCtrl: number | ViewController, opts :: String |+| Undefined,
+    popToRoot: (opts :: String |+| Undefined,
+    push: <T extends NavComponent>(component: T, componentProps :: String |+| Undefined,
+    removeIndex: (startIndex: number, removeCount :: String |+| Undefined,
+    root :: String |+| Undefined,
+    rootParams :: String |+| Undefined,
+    setPages: (views: NavComponent[] | NavComponentWithProps[], opts :: String |+| Undefined,
+    setRoot: <T extends NavComponent>(component: T, componentProps :: String |+| Undefined,
+    setRouteId: (id: string, params: ComponentProps | undefined, direction: RouterDirection, animation :: EventHandler |+| Undefined,
+    swipeGesture :: Boolean |+| Undefined
 }
 
 

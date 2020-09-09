@@ -262,7 +262,9 @@ type IonFabListProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    activated :: Boolean |+| Undefined,
+    side :: String |+| Undefined
 }
 
 

@@ -262,7 +262,20 @@ type IonRangeProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    color :: String |+| Undefined,
+    debounce :: Number |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    dualKnobs :: Boolean |+| Undefined,
+    max :: Number |+| Undefined,
+    min :: Number |+| Undefined,
+    mode :: String |+| Undefined,
+    name :: String |+| Undefined,
+    pin :: Boolean |+| Undefined,
+    snaps :: Boolean |+| Undefined,
+    step :: Number |+| Undefined,
+    ticks :: Boolean |+| Undefined,
+    value :: String |+| Undefined
 }
 
 

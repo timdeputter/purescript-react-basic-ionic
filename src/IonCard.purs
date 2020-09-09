@@ -263,7 +263,18 @@ type IonCardProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    button :: Boolean |+| Undefined,
+    color :: String |+| Undefined,
+    disabled :: Boolean |+| Undefined,
+    download :: String |+| Undefined,
+    href :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    rel :: String |+| Undefined,
+    routerAnimation :: String |+| Undefined,
+    routerDirection :: String |+| Undefined,
+    target :: String |+| Undefined,
+    type :: String |+| Undefined
 }
 
 type CSSProperties = {

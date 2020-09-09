@@ -262,7 +262,13 @@ type IonProgressBarProps = {
     ariavaluemax :: Number |+| Undefined,
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
-    ariavaluetext :: String |+| Undefined
+    ariavaluetext :: String |+| Undefined,
+    buffer :: Number |+| Undefined,
+    color :: String |+| Undefined,
+    mode :: String |+| Undefined,
+    reversed :: Boolean |+| Undefined,
+    type :: String |+| Undefined,
+    value :: Number |+| Undefined
 }
 
 
