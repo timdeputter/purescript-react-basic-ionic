@@ -13,7 +13,7 @@ type IonActionSheetProps = {
     header :: String |+| Undefined,
     subHeader :: String |+| Undefined,
     cssClass :: String |+| Array String |+| Undefined,
-    buttons :: Array String |+| Undefined,
+    buttons :: Array ActionSheetButton,
     backdropDismiss :: Boolean |+| Undefined,
     translucent :: Boolean |+| Undefined,
     animated :: Boolean |+| Undefined,
