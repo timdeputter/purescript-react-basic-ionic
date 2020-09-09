@@ -263,7 +263,6 @@ type IonRippleEffectProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    addRipple :: String |+| Undefined,
     type :: String |+| Undefined
 }
 

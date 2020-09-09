@@ -266,7 +266,6 @@ type IonTabProps = {
     active :: Boolean |+| Undefined,
     component :: String |+| Undefined,
     delegate :: String |+| Undefined,
-    setActive :: EventHandler |+| Undefined,
     tab :: String |+| Undefined
 }
 

@@ -263,7 +263,6 @@ type IonInfiniteScrollProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    complete :: EventHandler |+| Undefined,
     disabled :: Boolean |+| Undefined,
     position :: String |+| Undefined,
     threshold :: String |+| Undefined

@@ -272,7 +272,6 @@ type IonSelectProps = {
     multiple :: Boolean |+| Undefined,
     name :: String |+| Undefined,
     okText :: String |+| Undefined,
-    open: (event :: EventHandler |+| Undefined,
     placeholder :: String |+| Undefined,
     selectedText :: String |+| Undefined,
     value :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| String |+| Undefined

@@ -264,7 +264,6 @@ type IonFabProps = {
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
     activated :: Boolean |+| Undefined,
-    close :: EventHandler |+| Undefined,
     edge :: Boolean |+| Undefined,
     horizontal :: String |+| Undefined,
     vertical :: String |+| Undefined

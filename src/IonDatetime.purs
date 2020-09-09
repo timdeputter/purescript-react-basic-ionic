@@ -280,7 +280,6 @@ type IonDatetimeProps = {
     monthShortNames :: Array String |+| String |+| Undefined,
     monthValues :: Array Number |+| Number |+| String |+| Undefined,
     name :: String |+| Undefined,
-    open :: EventHandler |+| Undefined,
     pickerFormat :: String |+| Undefined,
     pickerOptions :: String |+| Undefined,
     placeholder :: String |+| Undefined,

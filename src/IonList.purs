@@ -263,7 +263,6 @@ type IonListProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    closeSlidingItems :: EventHandler |+| Undefined,
     inset :: Boolean |+| Undefined,
     lines :: String |+| Undefined,
     mode :: String |+| Undefined

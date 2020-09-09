@@ -263,18 +263,12 @@ type IonMenuProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    close: (animated :: EventHandler |+| Undefined,
     contentId :: String |+| Undefined,
     disabled :: Boolean |+| Undefined,
-    isActive :: EventHandler |+| Undefined,
-    isOpen :: EventHandler |+| Undefined,
     maxEdgeStart :: Number |+| Undefined,
     menuId :: String |+| Undefined,
-    open: (animated :: EventHandler |+| Undefined,
-    setOpen: (shouldOpen: boolean, animated :: EventHandler |+| Undefined,
     side :: String |+| Undefined,
     swipeGesture :: Boolean |+| Undefined,
-    toggle: (animated :: EventHandler |+| Undefined,
     type :: String |+| Undefined
 }
 

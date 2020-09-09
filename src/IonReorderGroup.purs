@@ -263,7 +263,6 @@ type IonReorderGroupProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    complete: (listOrReorder :: EventHandler |+| Undefined,
     disabled :: Boolean |+| Undefined
 }
 

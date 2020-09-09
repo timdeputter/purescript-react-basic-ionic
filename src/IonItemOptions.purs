@@ -263,7 +263,6 @@ type IonItemOptionsProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    fireSwipeEvent :: EventHandler |+| Undefined,
     side :: String |+| Undefined
 }
 

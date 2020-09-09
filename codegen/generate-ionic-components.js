@@ -297,8 +297,12 @@ const getRowTypesFromRegion = async (type, lines, pickers, writeOutput, depths) 
         e => !isComment(e));
     var statements = getStatements(flatten("", region));
     return await sequence(statements.filter(e => e.includes(":")).map(e => parseGenereicRowTypeElement(e)).filter(
-            e => isPicked(e, pickers)).map(generateRowTypeElement(lines, pickers, writeOutput)));
+            e => isPicked(e, pickers)).filter(e => !isMethod(e)).map(generateRowTypeElement(lines, pickers, writeOutput)));
 };
+
+const isMethod = (e) => {
+    return e.type.includes("=> Promise<") && !e.type.includes("=> Promise<OverlayEventDetail<T>>");
+}
 
 const isPicked = (e, pickers) => {
     if(pickers && pickers.length > 0)
@@ -352,8 +356,9 @@ const generateSumType = async (typeScriptType, lines, pickers, writeOutput) => {
 };
 
 const parseGenereicRowTypeElement = (codeline) =>  {
-    var elements = codeline.split("?:");
-    if(elements.length == 1) elements = codeline.split(":");
+    
+    var elements = splitFirst(codeline, "?:");
+    if(elements.length <= 1) elements = splitFirst(codeline, ":");
     var s = elements.map(s => s.trim());
     return {name: s[0].replace(/'/g, ""), type: s[1].replace(';','') };
 }
@@ -448,5 +453,19 @@ const distinct = (a) => {
 const isEmptyOrSpaces = (str) => {
     return str === null || str.match(/^ *$/) !== null;
 }
+
+const splitFirst = (string, separator) => {
+	const separatorIndex = string.indexOf(separator);
+
+	if (separatorIndex === -1) {
+		return [];
+	}
+
+	return [
+		string.slice(0, separatorIndex),
+		string.slice(separatorIndex + separator.length)
+	];
+};
+
 
 generateIonicTypes(process.argv[2] == "js");

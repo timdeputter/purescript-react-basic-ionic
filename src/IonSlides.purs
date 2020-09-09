@@ -263,26 +263,10 @@ type IonSlidesProps = {
     ariavaluemin :: Number |+| Undefined,
     ariavaluenow :: Number |+| Undefined,
     ariavaluetext :: String |+| Undefined,
-    getActiveIndex :: EventHandler |+| Undefined,
-    getPreviousIndex :: EventHandler |+| Undefined,
-    getSwiper :: EventHandler |+| Undefined,
-    isBeginning :: EventHandler |+| Undefined,
-    isEnd :: EventHandler |+| Undefined,
-    length :: EventHandler |+| Undefined,
-    lockSwipeToNext :: String |+| Undefined,
-    lockSwipeToPrev :: String |+| Undefined,
-    lockSwipes :: String |+| Undefined,
     mode :: String |+| Undefined,
     options :: String |+| Number |+| Boolean |+| (Array String) |+| (Array Boolean) |+| (Array Number) |+| Undefined,
     pager :: Boolean |+| Undefined,
-    scrollbar :: Boolean |+| Undefined,
-    slideNext: (speed :: Number |+| String |+| Undefined,
-    slidePrev: (speed :: Number |+| String |+| Undefined,
-    slideTo: (index: number, speed :: Number |+| String |+| Undefined,
-    startAutoplay :: EventHandler |+| Undefined,
-    stopAutoplay :: EventHandler |+| Undefined,
-    update :: EventHandler |+| Undefined,
-    updateAutoHeight: (speed :: EventHandler |+| Undefined
+    scrollbar :: Boolean |+| Undefined
 }
 
 

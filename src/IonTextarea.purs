@@ -272,7 +272,6 @@ type IonTextareaProps = {
     debounce :: Number |+| Undefined,
     disabled :: Boolean |+| Undefined,
     enterkeyhint :: String |+| Undefined,
-    getInputElement :: EventHandler |+| Undefined,
     inputmode :: String |+| Undefined,
     maxlength :: Number |+| Undefined,
     minlength :: Number |+| Undefined,
@@ -282,7 +281,6 @@ type IonTextareaProps = {
     readonly :: Boolean |+| Undefined,
     required :: Boolean |+| Undefined,
     rows :: Number |+| Undefined,
-    setFocus :: EventHandler |+| Undefined,
     spellcheck :: Boolean |+| Undefined,
     value :: String |+| Undefined,
     wrap :: String |+| Undefined

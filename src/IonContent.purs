@@ -266,12 +266,7 @@ type IonContentProps = {
     color :: String |+| Undefined,
     forceOverscroll :: Boolean |+| Undefined,
     fullscreen :: Boolean |+| Undefined,
-    getScrollElement :: EventHandler |+| Undefined,
-    scrollByPoint :: String |+| Undefined,
     scrollEvents :: Boolean |+| Undefined,
-    scrollToBottom: (duration :: EventHandler |+| Undefined,
-    scrollToPoint: (x: number | undefined | null, y: number | undefined | null, duration :: EventHandler |+| Undefined,
-    scrollToTop: (duration :: EventHandler |+| Undefined,
     scrollX :: Boolean |+| Undefined,
     scrollY :: Boolean |+| Undefined
 }

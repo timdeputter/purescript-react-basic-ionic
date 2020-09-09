@@ -4,7 +4,7 @@ module Ionic.IonRouterOutlet where
 import Ionic.Basic (ionElement)
 import Literals.Undefined (Undefined)
 import React.Basic (JSX, ReactComponent)
-import React.Basic.Events (EventHandler)
+
 import Untagged.Coercible (class Coercible)
 import Untagged.Union (type (|+|))
     
@@ -17,7 +17,6 @@ type IonRouterOutletProps = {
     animated :: Boolean |+| Undefined,
     animation :: String |+| Undefined,
     delegate :: String |+| Undefined,
-    getRouteId :: EventHandler |+| Undefined,
     mode :: String |+| Undefined,
     swipeHandler :: String |+| Undefined,
     key :: String |+| Number |+| Undefined
